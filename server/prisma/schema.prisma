@@ -54,7 +54,7 @@ model Image {
 model Tag {
     id          Int           @id @default(autoincrement())
     name        String        @unique @db.VarChar(15) // Exemple: Fighter, Mage, Tank, etc.
-    ChampionTag ChampionTag[] // Jointure N-N avec Champion
+    championTag ChampionTag[] // Jointure N-N avec Champion
 
     @@index([name])
 }
@@ -128,11 +128,12 @@ model User {
     email         String            @unique @db.VarChar(50)
     password      String
     role          UserRole          @default(USER) // Rôle de l'utilisateur (par défaut : USER)
-    info          UsersInfo?        @relation("UserInfo") // Relation 1-1 avec UsersInfo
+    summoner      SummonerInfo? // Relation 1-1 avec summoner 
     groups        GroupMembership[] // Relation avec les groupes via GroupMembership
     teams         TeamMembership[] // Relation avec les équipes via TeamMembership
     createdGroups Group[]           @relation("UserGroups") // Groupes créés par cet utilisateur
     createdTeams  Team[]            @relation("UserTeams") // Teams créées par cet utilisateur
+    tokens        Token[] // Relation avec les tokens
     createdAt     DateTime          @default(now()) // Date de création du compte
     updatedAt     DateTime          @updatedAt // Date de dernière mise à jour
 
@@ -140,14 +141,25 @@ model User {
     @@index([username, email]) // Optimisation des recherches
 }
 
-model UsersInfo {
+model SummonerInfo {
     id       String   @id @default(uuid())
     userId   String   @unique
     rank     Rank
     division Division
     level    Int
 
-    user User @relation("UserInfo", fields: [userId], references: [id])
+    user User @relation(fields: [userId], references: [id])
+}
+
+model Token {
+    id        Int       @id @default(autoincrement())
+    userId    String // Référence à l'utilisateur
+    type      TokenType // Type du token (Access, Refresh, Email Verification, etc.)
+    token     String // Valeur du token
+    expiresAt DateTime // Date d'expiration du token
+    createdAt DateTime  @default(now())
+
+    user User @relation(fields: [userId], references: [id]) // Relation avec l'utilisateur
 }
 
 model Group {
@@ -178,7 +190,7 @@ model GroupMembership {
     user  User  @relation(fields: [userId], references: [id]) // Relation vers User
 
     @@unique([groupId, userId]) // Un utilisateur ne peut être membre d'un groupe qu'une seule fois
-    @@index([groupId, userId]) // Optimisation des recherches
+    @@index([groupId, userId, role]) // Optimisation des recherches
 }
 
 model Team {
@@ -195,7 +207,7 @@ model Team {
     createdBy User  @relation("UserTeams", fields: [createdById], references: [id]) // Relation avec le créateur
 
     @@unique([groupId, name]) // Un nom d'équipe doit être unique pour chaque groupe
-    @@index([name]) // Optimisation des recherches
+    @@index([name, createdById]) // Optimisation des recherches
 }
 
 model TeamMembership {
@@ -254,4 +266,12 @@ enum Lane {
     MID
     ADC
     SUPPORT
+}
+
+enum TokenType {
+    ACCESS
+    REFRESH
+    EMAIL_VERIFY
+    PASSWORD_RESET
+    INVITATION
 }
