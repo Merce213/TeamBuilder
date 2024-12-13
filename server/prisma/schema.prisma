@@ -134,6 +134,7 @@ model User {
     createdGroups Group[]           @relation("UserGroups") // Groupes créés par cet utilisateur
     createdTeams  Team[]            @relation("UserTeams") // Teams créées par cet utilisateur
     tokens        Token[] // Relation avec les tokens
+    session       Session[]
     createdAt     DateTime          @default(now()) // Date de création du compte
     updatedAt     DateTime          @updatedAt // Date de dernière mise à jour
 
@@ -152,14 +153,29 @@ model SummonerInfo {
 }
 
 model Token {
-    id        Int       @id @default(autoincrement())
+    id        String    @id @default(uuid())
     userId    String // Référence à l'utilisateur
-    type      TokenType // Type du token (Access, Refresh, Email Verification, etc.)
+    type      TokenType // Type du token (Email Verification, Password Reset etc.)
     token     String // Valeur du token
     expiresAt DateTime // Date d'expiration du token
     createdAt DateTime  @default(now())
 
     user User @relation(fields: [userId], references: [id]) // Relation avec l'utilisateur
+
+    @@index([userId, type, token]) // Optimisation des recherches
+}
+
+model Session {
+    id           String   @id @default(uuid())
+    userId       String
+    refreshToken String   @unique
+    expiresAt    DateTime
+    createdAt    DateTime @default(now())
+    device       String
+
+    user User @relation(fields: [userId], references: [id])
+
+    @@index([userId, refreshToken, device]) // Optimisation des recherches
 }
 
 model Group {
@@ -269,8 +285,6 @@ enum Lane {
 }
 
 enum TokenType {
-    ACCESS
-    REFRESH
     EMAIL_VERIFY
     PASSWORD_RESET
     INVITATION

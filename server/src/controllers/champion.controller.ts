@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import prisma from "../client";
 import { Lane } from "@prisma/client";
+import { prisma } from "../client";
 
 interface ChampionFilters {
 	name?: { contains: string; mode: "insensitive" };

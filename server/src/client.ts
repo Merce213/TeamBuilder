@@ -1,5 +1,9 @@
 import { PrismaClient } from "@prisma/client";
+import Redis from "ioredis";
 
-const prisma = new PrismaClient();
+export const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379";
 
-export default prisma;
+export const prisma = new PrismaClient();
+export const redis = new Redis(REDIS_URL).on("error", (err) => {
+	console.error("Redis error:", err);
+});
