@@ -195,12 +195,7 @@ export const signOut = async (req: Request, res: Response) => {
 
 export const me = async (req: Request, res: Response) => {
 	try {
-		if (!req.user || typeof req.user === "string") {
-			res.status(401).json({ error: "Unauthorized" });
-			return;
-		}
-
-		const userId = req.user.id;
+		const userId = req.user?.id;
 
 		const user = await prisma.user.findUnique({
 			where: { id: userId },
