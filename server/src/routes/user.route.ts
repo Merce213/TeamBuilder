@@ -1,21 +1,15 @@
 import { Router } from "express";
-import { checkAuthorization } from "../middlewares/authorization.middleware";
 import {
+	deleteUser,
 	getAllUsers,
 	getUser,
-	updateUser,
-	deleteUser,
 	searchUsers,
-	resetPasswordLink,
-	changeResetPassword,
+	updateUser,
 } from "../controllers/user.controller";
 import { authenticate } from "../middlewares/authentication.middleware";
+import { checkAuthorization } from "../middlewares/authorization.middleware";
 import { validateData } from "../middlewares/validation.middleware";
-import {
-	UserUpdateSchema,
-	ChangeForgottenPasswordSchema,
-	ResetPasswordRequestSchema,
-} from "../schemas/user.schema";
+import { UserUpdateSchema } from "../schemas/user.schema";
 
 const router: Router = Router();
 
@@ -25,16 +19,6 @@ router.get(
 	getAllUsers
 );
 router.get("/search", authenticate, searchUsers);
-router.post(
-	"/reset-password-link",
-	[validateData(ResetPasswordRequestSchema)],
-	resetPasswordLink
-);
-router.post(
-	"/change-forgotten-password",
-	[validateData(ChangeForgottenPasswordSchema)],
-	changeResetPassword
-);
 
 router.get("/:userId", [authenticate, checkAuthorization()], getUser);
 router.put(

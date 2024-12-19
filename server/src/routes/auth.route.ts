@@ -1,19 +1,26 @@
 import { Router } from "express";
-import { checkNotAuthenticated } from "./../middlewares/authentication.middleware";
-import { validateData } from "../middlewares/validation.middleware";
 import {
-	signIn,
-	signUp,
-	signOut,
-	refreshToken,
+	changeResetPassword,
 	me,
+	refreshToken,
+	resetPasswordLink,
+	signIn,
+	signOut,
+	signUp,
 	userAgent,
 } from "../controllers/auth.controller";
-import { UserSignInSchema, UserSignUpSchema } from "../schemas/user.schema";
 import {
 	authenticate,
 	refreshAuthenticate,
 } from "../middlewares/authentication.middleware";
+import { validateData } from "../middlewares/validation.middleware";
+import {
+	ChangeForgottenPasswordSchema,
+	ResetPasswordRequestSchema,
+	UserSignInSchema,
+	UserSignUpSchema,
+} from "../schemas/user.schema";
+import { checkNotAuthenticated } from "./../middlewares/authentication.middleware";
 
 const router: Router = Router();
 
@@ -28,6 +35,16 @@ router.post(
 	signIn
 );
 router.post("/signout", authenticate, signOut);
+router.post(
+	"/reset-password-link",
+	[validateData(ResetPasswordRequestSchema)],
+	resetPasswordLink
+);
+router.post(
+	"/change-forgotten-password",
+	[validateData(ChangeForgottenPasswordSchema)],
+	changeResetPassword
+);
 router.get("/me", authenticate, me);
 router.get("/ua", userAgent);
 
