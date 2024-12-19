@@ -9,6 +9,7 @@ const keys = {
 	riotApiKey: process.env.RIOT_API_KEY || "",
 	resendApiKey: process.env.RESEND_API_KEY || "",
 	frontendUrl: process.env.FRONTEND_URL || "http://localhost:3000",
+	ddragonApiKey: process.env.DDRAGON_API_URL || "",
 };
 
 export default keys;
