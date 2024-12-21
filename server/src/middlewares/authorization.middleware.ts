@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { prisma } from "../client";
 
 export const checkAuthorization =
 	(requireAdmin = false, allowSelf = true) =>
@@ -33,3 +34,33 @@ export const checkAuthorization =
 			res.status(500).json({ error: "Internal server error" });
 		}
 	};
+
+export const checkUserInParamsExists = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const { userId } = req.params;
+
+		if (!userId) {
+			res.status(400).json({
+				error: "User ID is required in parameters",
+			});
+			return;
+		}
+
+		const user = await prisma.user.findUnique({
+			where: { id: userId },
+		});
+		if (!user) {
+			res.status(404).json({ error: "User not found" });
+			return;
+		}
+
+		next();
+	} catch (error) {
+		console.error("Error in checkUserExists middleware:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
