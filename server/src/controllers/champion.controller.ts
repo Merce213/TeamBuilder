@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import prisma from "../client";
 import { Lane } from "@prisma/client";
+import { prisma } from "../client";
 
 interface ChampionFilters {
 	name?: { contains: string; mode: "insensitive" };
@@ -33,18 +33,27 @@ export const getChampions = async (req: Request, res: Response) => {
 			let lanes: Lane[] = [];
 
 			if (Array.isArray(req.query.lane)) {
-				lanes = req.query.lane.map(
-					(l) => (l as string).toUpperCase() as Lane
-				);
+				lanes = req.query.lane
+					.map((l) => (typeof l === "string" ? l.toLowerCase() : ""))
+					.filter(
+						(l): l is keyof typeof laneConsts => l in laneConsts
+					)
+					.map((l) => laneConsts[l]);
 			} else if (typeof req.query.lane === "string") {
-				lanes = [req.query.lane.toUpperCase() as Lane];
+				const lane =
+					req.query.lane.toLowerCase() as keyof typeof laneConsts;
+				if (lane in laneConsts) {
+					lanes = [laneConsts[lane]];
+				}
 			}
 
-			filters.lanes = {
-				some: {
-					lane: { in: lanes },
-				},
-			};
+			if (lanes.length > 0) {
+				filters.lanes = {
+					some: {
+						lane: { in: lanes },
+					},
+				};
+			}
 		}
 
 		// Filtrage par tag

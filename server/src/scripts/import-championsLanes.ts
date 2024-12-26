@@ -2,7 +2,7 @@ import { Lane, PrismaClient } from "@prisma/client";
 import { championsByLane } from "../data/championsByLane";
 
 const prisma = new PrismaClient();
-const debugMode = true;
+const debugMode = process.env.NODE_ENV === "development";
 
 async function importChampionLanes() {
 	try {

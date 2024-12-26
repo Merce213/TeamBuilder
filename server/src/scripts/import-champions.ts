@@ -1,12 +1,13 @@
 import axios from "axios";
 import { PrismaClient } from "@prisma/client";
 import { ChampionApi } from "../types/api-champion";
+import keys from "../utils/keys";
 
 const prisma = new PrismaClient();
 const BASE_URL =
-	"https://ddragon.leagueoflegends.com/cdn/14.23.1/data/en_US/champion";
+	keys.ddragonApiKey;
 
-const debugMode = true;
+const debugMode = process.env.NODE_ENV === "development";
 
 async function importChampions() {
 	try {

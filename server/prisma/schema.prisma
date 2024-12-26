@@ -9,17 +9,18 @@ generator client {
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
 }
 
 // ------------- CHAMPIONS AND RELATED ENTITIES --------------
 model Champion {
-    id             Int              @id @default(autoincrement())
-    name           String           @unique @db.VarChar(30)
-    title          String           @db.VarChar(50)
-    blurb          String           @db.Text
-    lore           String           @db.Text
+    id             Int                    @id @default(autoincrement())
+    name           String                 @unique @db.VarChar(30)
+    title          String                 @db.VarChar(50)
+    blurb          String                 @db.Text
+    lore           String                 @db.Text
     info           Info? // Relation 1-1 avec Info
     image          Image? // Relation 1-1 avec Image
     stats          Stats? // Relation 1-1 avec Stats
@@ -27,6 +28,7 @@ model Champion {
     tags           ChampionTag[] // Jointure N-N avec Tag
     lanes          ChampionLane[] // Jointure N-N avec Lane
     teamMembership TeamMembership[] // Jointure N-N avec Team
+    favoriteBy     UserFavoriteChampion[]
 
     @@index([name])
 }
@@ -54,7 +56,7 @@ model Image {
 model Tag {
     id          Int           @id @default(autoincrement())
     name        String        @unique @db.VarChar(15) // Exemple: Fighter, Mage, Tank, etc.
-    ChampionTag ChampionTag[] // Jointure N-N avec Champion
+    championTag ChampionTag[] // Jointure N-N avec Champion
 
     @@index([name])
 }
@@ -103,51 +105,108 @@ model ChampionTag {
     championId Int
     tagId      Int
 
-    champion Champion @relation(fields: [championId], references: [id])
-    tag      Tag      @relation(fields: [tagId], references: [id])
+    champion Champion @relation(fields: [championId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    tag      Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     @@unique([championId, tagId])
-    @@index([championId, tagId]) // Optimisation des recherches
+    @@index([championId, tagId])
 }
 
 model ChampionLane {
-    id         Int  @id @default(autoincrement()) // Identifiant unique pour chaque relation
+    id         Int  @id @default(autoincrement())
     championId Int
     lane       Lane
 
-    champion Champion @relation(fields: [championId], references: [id]) // Relation vers Champion
+    champion Champion @relation(fields: [championId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     @@unique([championId, lane]) // Un champion ne peut être dans une même lane qu'une seule fois
-    @@index([championId, lane]) // Optimisation des recherches
+    @@index([championId, lane])
 }
 
 // ------------- USER AND RELATED ENTITIES --------------
 model User {
-    id            String            @id @default(uuid())
-    username      String            @unique @db.VarChar(20)
-    email         String            @unique @db.VarChar(50)
-    password      String
-    role          UserRole          @default(USER) // Rôle de l'utilisateur (par défaut : USER)
-    info          UsersInfo?        @relation("UserInfo") // Relation 1-1 avec UsersInfo
-    groups        GroupMembership[] // Relation avec les groupes via GroupMembership
-    teams         TeamMembership[] // Relation avec les équipes via TeamMembership
-    createdGroups Group[]           @relation("UserGroups") // Groupes créés par cet utilisateur
-    createdTeams  Team[]            @relation("UserTeams") // Teams créées par cet utilisateur
-    createdAt     DateTime          @default(now()) // Date de création du compte
-    updatedAt     DateTime          @updatedAt // Date de dernière mise à jour
+    id                String                 @id @default(uuid())
+    username          String                 @unique @db.VarChar(20)
+    email             String                 @unique @db.VarChar(50)
+    password          String
+    role              UserRole               @default(USER) // Rôle de l'utilisateur (par défaut : USER)
+    summoner          SummonerInfo? // Relation 1-1 avec summoner 
+    groups            GroupMembership[] // Relation avec les groupes via GroupMembership
+    teams             TeamMembership[] // Relation avec les équipes via TeamMembership
+    createdGroups     Group[]                @relation("UserGroups") // Groupes créés par cet utilisateur
+    createdTeams      Team[]                 @relation("UserTeams") // Teams créées par cet utilisateur
+    tokens            Token[] // Relation avec les tokens
+    session           Session[] // Relation avec les sessions
+    favoriteChampions UserFavoriteChampion[]
+    favoriteLanes     UserFavoriteLane[]
+    createdAt         DateTime               @default(now())
+    updatedAt         DateTime               @updatedAt
 
     @@unique([username, email]) // Un nom d'utilisateur et un email doivent être uniques
-    @@index([username, email]) // Optimisation des recherches
+    @@index([id, username, email, createdAt])
 }
 
-model UsersInfo {
-    id       String   @id @default(uuid())
-    userId   String   @unique
-    rank     Rank
-    division Division
-    level    Int
+model SummonerInfo {
+    id       String @id @default(uuid())
+    userId   String @unique
+    puuid    String @unique
+    gameName String @db.VarChar(18)
+    tagLine  String @db.VarChar(6)
 
-    user User @relation("UserInfo", fields: [userId], references: [id])
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@index([gameName, tagLine])
+}
+
+model Token {
+    id        String    @id @default(uuid())
+    userId    String
+    type      TokenType // Type du token (Email Verification, Password Reset etc.)
+    token     String
+    expiresAt DateTime
+    createdAt DateTime  @default(now())
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@index([userId, type, token])
+}
+
+model Session {
+    id           String   @id @default(uuid())
+    userId       String
+    refreshToken String   @unique
+    expiresAt    DateTime
+    createdAt    DateTime @default(now())
+    device       String
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@index([userId, refreshToken, device])
+}
+
+model UserFavoriteChampion {
+    id         String   @id @default(uuid())
+    userId     String
+    championId Int
+    addedAt    DateTime @default(now())
+
+    user     User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    champion Champion @relation(fields: [championId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@unique([userId, championId]) // Un utilisateur ne peut avoir un champion favori qu'une seule fois
+    @@index([userId, championId])
+}
+
+model UserFavoriteLane {
+    id      String   @id @default(uuid())
+    userId  String
+    lane    Lane
+    addedAt DateTime @default(now())
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade) // Relation vers User
+
+    @@unique([userId, lane]) // Un utilisateur ne peut avoir une lane favori qu'une seule fois
+    @@index([userId, lane])
 }
 
 model Group {
@@ -157,13 +216,13 @@ model Group {
     description String?
     members     GroupMembership[] // Relation avec les membres via GroupMembership
     teams       Team[] // Relation avec les équipes de ce groupe
-    createdAt   DateTime          @default(now()) // Date de création du compte
-    updatedAt   DateTime          @updatedAt // Date de dernière mise à jour
+    createdAt   DateTime          @default(now())
+    updatedAt   DateTime          @updatedAt
 
-    createdBy User @relation("UserGroups", fields: [createdById], references: [id])
+    createdBy User @relation("UserGroups", fields: [createdById], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     @@unique([name, createdById]) // Un nom de groupe doit être unique par utilisateur
-    @@index([name]) // Optimisation des recherches
+    @@index([name])
 }
 
 model GroupMembership {
@@ -171,75 +230,55 @@ model GroupMembership {
     groupId   String
     userId    String
     role      GroupRole @default(MEMBER) // Rôle de l'utilisateur dans ce groupe (OWNER, ADMIN, MEMBER)
-    joinedAt  DateTime  @default(now()) // Date d'adhésion à ce groupe
-    updatedAt DateTime  @updatedAt // Date de dernière mise à jour
+    joinedAt  DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
 
-    group Group @relation(fields: [groupId], references: [id]) // Relation vers Group
-    user  User  @relation(fields: [userId], references: [id]) // Relation vers User
+    group Group @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     @@unique([groupId, userId]) // Un utilisateur ne peut être membre d'un groupe qu'une seule fois
-    @@index([groupId, userId]) // Optimisation des recherches
+    @@index([groupId, userId, role])
 }
 
 model Team {
-    id          String           @id @default(uuid()) // Identifiant unique pour chaque équipe
-    groupId     String // Référence au groupe auquel appartient l'équipe
-    createdById String // Référence au créateur de l'équipe
-    name        String // Nom de l'équipe
-    description String? // Description de l'équipe
+    id          String           @id @default(uuid())
+    groupId     String
+    createdById String
+    name        String
+    description String?
     members     TeamMembership[] // Membres de l'équipe via TeamMembership
-    createdAt   DateTime         @default(now()) // Date de création de l'équipe
-    updatedAt   DateTime         @updatedAt // Date de dernière mise à jour
+    createdAt   DateTime         @default(now())
+    updatedAt   DateTime         @updatedAt
 
-    group     Group @relation(fields: [groupId], references: [id]) // Relation avec Group
-    createdBy User  @relation("UserTeams", fields: [createdById], references: [id]) // Relation avec le créateur
+    group     Group @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    createdBy User  @relation("UserTeams", fields: [createdById], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     @@unique([groupId, name]) // Un nom d'équipe doit être unique pour chaque groupe
-    @@index([name]) // Optimisation des recherches
+    @@index([name, createdById])
 }
 
 model TeamMembership {
-    id         String   @id @default(uuid()) // Identifiant unique pour chaque relation
-    teamId     String // Référence à l'équipe
-    userId     String // Référence à l'utilisateur
-    championId Int // Référence au champion joué par cet utilisateur
-    lane       Lane // Lane où l'utilisateur jouera ce champion
-    joinedAt   DateTime @default(now()) // Date d'adhésion à cette équipe
-    updatedAt  DateTime @updatedAt // Date de dernière mise à jour
+    id         String   @id @default(uuid())
+    teamId     String
+    userId     String
+    championId Int
+    lane       Lane
+    joinedAt   DateTime @default(now())
+    updatedAt  DateTime @updatedAt
 
-    team     Team     @relation(fields: [teamId], references: [id]) // Relation vers Team
-    user     User     @relation(fields: [userId], references: [id]) // Relation vers User
-    champion Champion @relation(fields: [championId], references: [id]) // Relation vers Champion
+    team     Team     @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    user     User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    champion Champion @relation(fields: [championId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     @@unique([teamId, userId]) // Un utilisateur ne peut être membre d'une équipe qu'une seule fois
-    @@unique([championId, lane]) // Un champion ne peut être dans une même lane qu'une seule fois
-    @@index([teamId, userId, championId]) // Optimisation des recherches
+    @@unique([teamId, championId, lane]) // Un champion ne peut être dans une même équipe et lane qu'une seule fois
+    @@index([teamId, userId, championId])
 }
 
 // enum
 enum UserRole {
     USER
     ADMIN
-}
-
-enum Rank {
-    IRON
-    BRONZE
-    SILVER
-    GOLD
-    PLATINUM
-    EMERALD
-    DIAMOND
-    MASTER
-    GRANDMASTER
-    CHALLENGER
-}
-
-enum Division {
-    IV
-    III
-    II
-    I
 }
 
 enum GroupRole {
@@ -254,4 +293,10 @@ enum Lane {
     MID
     ADC
     SUPPORT
+}
+
+enum TokenType {
+    EMAIL_VERIFY
+    PASSWORD_RESET
+    INVITATION
 }

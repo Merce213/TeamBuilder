@@ -1,22 +1,30 @@
 import express, { Application } from "express";
 import cors from "cors";
-import userRoutes from "./routes/user.route";
+import cookieParser from "cookie-parser";
+import authRoutes from "./routes/auth.route";
 import championRoutes from "./routes/champion.route";
+import userRoutes from "./routes/user.route";
+import groupRoutes from "./routes/group.route";
+import summonerRoutes from "./routes/summoner.route";
 
 const app: Application = express();
 
-// Middleware 
-app.use(cors(
-	{
-		origin: "http://localhost:3000",
+// Middleware
+app.use(
+	cors({
+		origin: "http://localhost:5173",
 		credentials: true,
-	},
-))
+	})
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Définir les routes
-app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/champions", championRoutes);
+app.use("/api/users", userRoutes, groupRoutes);
+app.use("/api/summoners", summonerRoutes);
 
 export default app;
