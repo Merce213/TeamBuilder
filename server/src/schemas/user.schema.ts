@@ -8,6 +8,10 @@ export const UserSignUpSchema = z.object({
 			})
 			.min(4, "Username must be at least 4 characters")
 			.max(20, "Username must be at most 20 characters")
+			.regex(
+				/^[A-Za-z0-9_]+$/,
+				"Username can only contain letters, numbers, and underscores"
+			)
 			.trim()
 			.refine((val) => val.trim().length > 0, {
 				message: "Username cannot be empty",

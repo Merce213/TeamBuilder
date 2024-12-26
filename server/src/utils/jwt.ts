@@ -70,12 +70,16 @@ export const generateTokensAndSaveToDb = async (
 	user: UserJwtPayload,
 	userAgent: string
 ) => {
-	const accessToken = generateToken(user, TokenType.AccessToken, {
-		expiresIn: TokenExpirations[TokenType.AccessToken],
-	});
+	const accessToken = generateToken(
+		{ id: user.id, role: user.role },
+		TokenType.AccessToken,
+		{
+			expiresIn: TokenExpirations[TokenType.AccessToken],
+		}
+	);
 
 	const refreshToken = generateToken(
-		{ id: user.id },
+		{ id: user.id, role: user.role },
 		TokenType.RefreshToken,
 		{
 			expiresIn: TokenExpirations[TokenType.RefreshToken],
@@ -125,7 +129,7 @@ export const getUserIdFromRedisOrDb = async (refreshToken: string) => {
 	await saveToRedisExpire(
 		`refresh_token:${refreshToken}`,
 		JSON.stringify({ id: userFromSession.userId, issuedAt: new Date() }),
-		RedisDurationInSeconds.ONE_WEEK
+		Math.ceil((userFromSession.expiresAt.getTime() - Date.now()) / 1000)
 	);
 
 	return { id: userFromSession.userId };

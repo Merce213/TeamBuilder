@@ -11,6 +11,7 @@ const laneConsts = {
 	support: Lane.SUPPORT,
 } as const;
 
+// User CRUD operations
 export const getUser = async (req: Request, res: Response) => {
 	try {
 		const userId = req.params.userId;
@@ -73,7 +74,7 @@ export const updateUser = async (req: Request, res: Response) => {
 				user.password
 			);
 			if (!isPasswordValid) {
-				res.status(401).json({
+				res.status(400).json({
 					error: "Invalid old password",
 					field: "oldPassword",
 				});
@@ -148,6 +149,7 @@ export const searchUsers = async (req: Request, res: Response) => {
 	}
 };
 
+// Favorite's Users Operations
 export const addFavoriteLanes = async (req: Request, res: Response) => {
 	try {
 		const userId = req.params.userId;

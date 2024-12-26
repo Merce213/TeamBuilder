@@ -24,6 +24,7 @@ import {
 
 const router: Router = Router();
 
+// User routes
 router.get(
 	"/all",
 	[authenticate, checkAuthorization(true, false)],
@@ -32,12 +33,14 @@ router.get(
 router.get("/search", authenticate, searchUsers);
 
 router.get("/:userId", [authenticate, checkAuthorization()], getUser);
-router.put(
+router.patch(
 	"/:userId",
 	[authenticate, validateData(UserUpdateSchema), checkAuthorization()],
 	updateUser
 );
 router.delete("/:userId", [authenticate, checkAuthorization()], deleteUser);
+
+// Favorite's User routes
 router.post(
 	"/:userId/favorite-lanes",
 	[

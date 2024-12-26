@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.route";
 import championRoutes from "./routes/champion.route";
 import userRoutes from "./routes/user.route";
+import groupRoutes from "./routes/group.route";
 
 const app: Application = express();
 
@@ -21,6 +22,6 @@ app.use(cookieParser());
 // Définir les routes
 app.use("/api/auth", authRoutes);
 app.use("/api/champions", championRoutes);
-app.use("/api/users", userRoutes);
+app.use("/api/users", userRoutes, groupRoutes);
 
 export default app;
