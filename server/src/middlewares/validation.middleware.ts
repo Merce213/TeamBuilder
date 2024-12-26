@@ -18,17 +18,14 @@ export const validateData =
 			next();
 		} catch (error) {
 			if (error instanceof ZodError) {
-				const errorMessages = error.errors.map((issue) => ({
-					type: issue.path[0],
-					field: issue.path[1],
-					message: issue.message,
-				}));
+				const errorMessages = Object.fromEntries(
+					error.errors.map((issue) => [issue.path[1], issue.message])
+				);
 
 				console.error("Validation error:", errorMessages);
 
 				res.status(400).json({
-					error: "Invalid request data",
-					details: errorMessages,
+					errors: errorMessages,
 				});
 			} else {
 				console.error("Unexpected error:", error);

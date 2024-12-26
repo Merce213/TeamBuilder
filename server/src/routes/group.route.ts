@@ -34,7 +34,7 @@ router.post(
 );
 router.get(
 	"/:userId/groups/:groupId",
-	[authenticate, validateData(GetGroupSchema), checkGroupAccess(false)],
+	[authenticate, validateData(GetGroupSchema)],
 	getGroupById
 );
 router.patch(

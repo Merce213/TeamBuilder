@@ -1,11 +1,11 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
+import { prisma } from "../client";
+import { TokenType } from "../types/token";
 import {
 	getUserIdFromRedisOrDb,
 	revokeRefreshTokenFromDb,
 	verifyToken,
 } from "../utils/jwt";
-import { TokenType } from "../types/token";
-import { prisma } from "../client";
 import { removeFromRedis } from "../utils/redis";
 
 export const checkNotAuthenticated = async (

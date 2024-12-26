@@ -134,3 +134,111 @@ export const checkGroupAccess =
 			return;
 		}
 	};
+
+export const checkGroupUpdatePermissions = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const { userId, groupId } = req.params;
+		const currentUserId = req.user?.id;
+		const currentUserRole = req.user?.role;
+
+		const group = await prisma.group.findFirst({
+			where: {
+				id: groupId,
+			},
+			select: {
+				id: true,
+				createdById: true,
+				name: true,
+				description: true,
+				members: {
+					select: { userId: true, role: true },
+				},
+			},
+		});
+		if (!group) {
+			res.status(404).json({
+				error: "Group not found.",
+			});
+			return;
+		}
+
+		const isAdmin = currentUserRole === UserRole.ADMIN;
+		const isOwner =
+			group.createdById === currentUserId && currentUserId === userId;
+		const isGroupAdmin = group.members.some(
+			(member) =>
+				member.userId === currentUserId &&
+				member.role === GroupRole.ADMIN
+		);
+
+		if (!isAdmin && !isOwner && !isGroupAdmin) {
+			res.status(403).json({
+				error: "Forbidden: Insufficient permissions to access this group.",
+			});
+			return;
+		}
+
+		res.locals.group = group;
+		next();
+	} catch (error) {
+		console.error(
+			"Error in checkGroupUpdatePermissions middleware:",
+			error
+		);
+		res.status(500).json({ error: "Internal server error" });
+	}
+};
+
+export const checkTeamCreationPermissions = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const { groupId } = req.params;
+		const currentUserId = req.user?.id;
+		const currentUserRole = req.user?.role;
+
+		const group = await prisma.group.findFirst({
+			where: { id: groupId },
+			select: {
+				createdById: true,
+				members: {
+					where: { userId: currentUserId },
+					select: { role: true },
+				},
+			},
+		});
+
+		if (!group) {
+			return res.status(404).json({
+				error: "Group not found or you do not have access.",
+			});
+		}
+
+		const isAdmin = currentUserRole === UserRole.ADMIN;
+		const isOwner = group.createdById === currentUserId;
+		const isGroupAdmin = group.members.some(
+			(member) => member.role === GroupRole.ADMIN
+		);
+
+		if (!isOwner && !isGroupAdmin && !isAdmin) {
+			return res.status(403).json({
+				error: "Forbidden: You do not have permission to create a team in this group.",
+			});
+		}
+
+		res.locals.group = group;
+		next();
+	} catch (error) {
+		console.error(
+			"Error in checkTeamCreationPermissions middleware:",
+			error
+		);
+		res.status(500).json({ error: "Internal server error" });
+	}
+};
