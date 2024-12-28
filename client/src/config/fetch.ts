@@ -1,53 +1,60 @@
-const refreshTokens = async (): Promise<void> => {
-	// Appel de l'API de rafraîchissement pour obtenir un nouveau token
-	const refreshResponse = await fetch("/refresh", {
+import keys from "../utils/keys";
+
+export const refreshTokens = async () => {
+	const refreshResponse = await fetch(`${keys.API_URL}/auth/refresh_token`, {
 		method: "POST",
-		credentials: "include", // S'assurer que les cookies sont envoyés avec la requête
+		credentials: "include",
 	});
 
 	if (!refreshResponse.ok) {
 		throw new Error("Session expired. Please login again.");
 	}
-
-	// Vous pouvez également stocker ou gérer les nouveaux tokens ici si nécessaire.
 };
 
-// Fonction pour gérer la requête avec rafraîchissement automatique du token
-const fetchWithRefresh = async (
+export const fetchWithRefreshAndRetry = async (
 	url: string,
 	options: RequestInit = {}
-): Promise<any> => {
-	const response = await fetch(url, {
+) => {
+	let response;
+
+	response = await fetch(url, {
 		...options,
-		credentials: "include", // Inclure les cookies
+		credentials: "include",
 	});
 
-	// Si la réponse est une erreur 401 (token expiré), tenter de rafraîchir le token
 	if (response.status === 401) {
 		try {
-			// Essayer de rafraîchir le token
 			await refreshTokens();
-
-			// Refaire la requête initiale avec un nouveau token après le rafraîchissement
-			const retryResponse = await fetch(url, {
+			response = await fetch(url, {
 				...options,
 				credentials: "include",
 			});
-
-			if (!retryResponse.ok) {
-				throw new Error("Request failed after token refresh.");
-			}
-
-			return retryResponse.json();
 		} catch (error) {
-			// Si le rafraîchissement échoue, informer l'utilisateur qu'il doit se reconnecter
+			console.error("Refresh error:", error);
 			throw new Error("Session expired. Please login again.");
 		}
 	}
 
-	if (!response.ok) {
-		throw new Error(await response.text()); // Rejeter en cas d'autres erreurs
+	return response;
+};
+
+export const fetchWithRefreshOnly = async (
+	url: string,
+	options: RequestInit = {}
+) => {
+	const response = await fetch(url, {
+		...options,
+		credentials: "include",
+	});
+
+	if (response.status === 401) {
+		try {
+			await refreshTokens();
+		} catch (error) {
+			console.error("Refresh error:", error);
+			throw new Error("Session expired. Please login again.");
+		}
 	}
 
-	return response.json();
+	return response;
 };

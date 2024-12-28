@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import clientFetch from "../config/axios";
+import { signIn } from "../api/auth";
 
 const SignIn = () => {
 	const [credentials, setCredentials] = useState({
@@ -8,6 +8,7 @@ const SignIn = () => {
 		password: "",
 	});
 	const [errors, setErrors] = useState<Record<string, string>>({});
+	const [errorMessage, setErrorMessage] = useState<string>("");
 
 	const navigate = useNavigate();
 
@@ -27,21 +28,27 @@ const SignIn = () => {
 		}
 	};
 
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		clientFetch
-			.post("/auth/signin", credentials)
-			.then((response) => {
-				console.log("sign in response", response);
-				navigate("/");
-				navigate(0);
-			})
-			.catch((error) => {
-				console.log("sign in error", error);
-				if (error.response && error.response.data) {
-					setErrors(error.response.data);
+		try {
+			const response = await signIn(credentials);
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				if (errorData.errors) {
+					setErrors(errorData.errors);
+				} else {
+					setErrorMessage(errorData.error);
 				}
-			});
+				return;
+			}
+
+			navigate("/");
+			navigate(0);
+		} catch (error) {
+			console.error("Error:", error);
+			setErrorMessage("An error occurred while signing in.");
+		}
 	};
 
 	return (
@@ -54,6 +61,7 @@ const SignIn = () => {
 					value={credentials.username}
 					onChange={handleChange}
 				/>
+				{errors && <p>{errors.username}</p>}
 			</label>
 			<label>
 				Password:
@@ -63,7 +71,9 @@ const SignIn = () => {
 					value={credentials.password}
 					onChange={handleChange}
 				/>
+				{errors && <p>{errors.password}</p>}
 			</label>
+			{errorMessage && <p>{errorMessage}</p>}
 			<button type="submit">Submit</button>
 		</form>
 	);

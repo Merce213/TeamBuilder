@@ -1,13 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import clientFetch from "../config/axios";
+import { useNavigate } from "react-router-dom";
+import { checkAuth } from "../api/auth";
 import { ReactSetState } from "../types/ReactTypes";
 import { UserStorage } from "../types/User";
 
 type AuthContextType = {
 	user: UserStorage | null;
 	setUser: ReactSetState<UserStorage | null>;
-	signIn: (username: string, password: string) => Promise<void>;
-	signOut: () => void;
 	loading: boolean;
 	setLoading: ReactSetState<boolean>;
 };
@@ -18,45 +17,48 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const [user, setUser] = useState<UserStorage | null>(null);
 	const [loading, setLoading] = useState(true);
 
+	const navigate = useNavigate();
+
 	useEffect(() => {
-		clientFetch
-			.get<UserStorage>("/auth/me")
-			.then((response) => {
-				setUser(response.data);
-			})
-			.catch(() => {
-				setLoading(false);
-			})
-			.finally(() => setLoading(false));
-	}, []);
+		const fetchUser = async (): Promise<void> => {
+			try {
+				const response = await checkAuth();
 
-	const signIn = async (username: string, password: string) => {
-		try {
-			setLoading(true);
-			const response = await clientFetch.post<UserStorage>(
-				"/auth/signin",
-				{
-					username,
-					password,
+				if (!response.ok) {
+					const errorData = await response.json();
+					setUser(null);
+					setLoading(false);
+					navigate("/signin");
+					return;
 				}
-			);
-			setUser(response.data);
-		} catch (error) {
-			console.error("Sign-in error:", error);
-		} finally {
-			setLoading(false);
-		}
-	};
 
-	const signOut = () => {
-		clientFetch.post("/auth/signout");
-		setUser(null);
-		setLoading(false);
-	};
+				const data = await response.json();
+				setUser(data);
+			} catch (error) {
+				console.error("Error fetching user:", error);
+				setUser(null);
+				setLoading(false);
+				navigate("/signin");
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchUser();
+	}, [navigate]);
+
+	if (loading) {
+		return <div>Loading...</div>;
+	}
 
 	return (
 		<AuthContext.Provider
-			value={{ user, setUser, signIn, signOut, loading, setLoading }}
+			value={{
+				user,
+				setUser,
+				loading,
+				setLoading,
+			}}
 		>
 			{children}
 		</AuthContext.Provider>
