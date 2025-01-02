@@ -1,0 +1,36 @@
+@use "sass:color";
+@use "sass:map";
+
+.btn {
+	@include button(map.get($colors, "gray"), map.get($colors, "text"));
+}
+
+@each $name, $background in $colors {
+	.btn-#{$name} {
+		@include button($background);
+
+		&-outline {
+			@include button($background, #fff);
+			background-color: transparent;
+			color: $background;
+			border: 2px solid $background;
+
+			&:hover {
+				background-color: $background;
+				color: #fff;
+			}
+		}
+
+		&-ghost {
+			@include button($background);
+			background-color: transparent;
+			color: $background;
+			box-shadow: none;
+
+			&:hover {
+				background-color: color.scale($background, $lightness: 40%);
+				color: $background;
+			}
+		}
+	}
+}

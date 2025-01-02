@@ -1,0 +1,47 @@
+@use "sass:map";
+
+@each $align, $value in $text-aligns {
+	.text-#{$align} {
+		text-align: #{$value};
+	}
+
+	@each $breakpoint, $breakpoint-value in $breakpoints {
+		@include responsive($breakpoint) {
+			.s-#{$breakpoint}\:text-#{$align} {
+				text-align: #{$value} !important;
+			}
+		}
+	}
+}
+
+@each $size, $value in $font-sizes {
+	.text-#{$size} {
+		font-size: #{$value};
+		line-height: map.get($line-heights, $size);
+	}
+
+	@each $breakpoint, $breakpoint-value in $breakpoints {
+		@include responsive($breakpoint) {
+			.s-#{$breakpoint}\:text-#{$size} {
+				font-size: $value !important;
+				line-height: map.get($line-heights, $size) !important;
+			}
+		}
+	}
+}
+
+@each $weight, $value in $font-weights {
+	.font-#{$weight} {
+		font-weight: #{$value} !important;
+	}
+}
+
+.font-sora {
+	font-family: "Sora", sans-serif;
+	font-style: normal;
+}
+
+.font-roboto {
+	font-family: "Roboto", sans-serif;
+	font-style: normal;
+}
