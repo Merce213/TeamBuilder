@@ -52,30 +52,34 @@ const SignIn = () => {
 	};
 
 	return (
-		<form onSubmit={handleSubmit}>
-			<label>
-				Username:
-				<input
-					type="text"
-					name="username"
-					value={credentials.username}
-					onChange={handleChange}
-				/>
-				{errors && <p>{errors.username}</p>}
-			</label>
-			<label>
-				Password:
-				<input
-					type="password"
-					name="password"
-					value={credentials.password}
-					onChange={handleChange}
-				/>
-				{errors && <p>{errors.password}</p>}
-			</label>
-			{errorMessage && <p>{errorMessage}</p>}
-			<button type="submit">Submit</button>
-		</form>
+		<div>
+			<h1>Sign In</h1>
+
+			<form onSubmit={handleSubmit}>
+				<label>
+					Username:
+					<input
+						type="text"
+						name="username"
+						value={credentials.username}
+						onChange={handleChange}
+					/>
+					{errors && <p>{errors.username}</p>}
+				</label>
+				<label>
+					Password:
+					<input
+						type="password"
+						name="password"
+						value={credentials.password}
+						onChange={handleChange}
+					/>
+					{errors && <p>{errors.password}</p>}
+				</label>
+				{errorMessage && <p>{errorMessage}</p>}
+				<button type="submit">Submit</button>
+			</form>
+		</div>
 	);
 };
 

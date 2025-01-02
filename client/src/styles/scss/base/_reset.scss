@@ -16,7 +16,8 @@
 }
 
 body {
-	line-height: 1.5;
+	font-size: map.get($font-sizes, "base");
+	line-height: map.get($line-heights, "base");
 	-webkit-font-smoothing: antialiased;
 	background-color: map.get($colors, "background");
 	color: map.get($colors, "text");
