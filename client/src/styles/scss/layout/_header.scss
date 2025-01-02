@@ -1,0 +1,18 @@
+@use "sass:map";
+
+.header {
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: 100%;
+
+	@media (min-width: map.get($breakpoints, "sm")) {
+		width: calc(100% - 256px);
+	}
+}
+
+.sidebar {
+	background-color: black;
+	backdrop-filter: blur(12px);
+	opacity: 0.8;
+}

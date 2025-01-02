@@ -1,0 +1,488 @@
+@use "sass:map";
+
+.container {
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 1rem;
+	padding-right: 1rem;
+
+	@each $breakpoint, $breakpoint-value in $breakpoints {
+		@include responsive($breakpoint) {
+			max-width: map.get($container-widths, $breakpoint);
+		}
+	}
+}
+
+.block {
+	display: block;
+}
+@each $breakpoint, $breakpoint-value in $breakpoints {
+	@include responsive($breakpoint) {
+		.s-#{$breakpoint}\:block {
+			display: block !important;
+		}
+	}
+}
+
+.hidden {
+	display: none;
+}
+@each $breakpoint, $breakpoint-value in $breakpoints {
+	@include responsive($breakpoint) {
+		.s-#{$breakpoint}\:hidden {
+			display: none !important;
+		}
+	}
+}
+
+.flex {
+	display: flex;
+}
+.inline-flex {
+	display: inline-flex;
+}
+
+.flex-row {
+	flex-direction: row;
+}
+.flex-row-reverse {
+	flex-direction: row-reverse;
+}
+.flex-col {
+	flex-direction: column;
+}
+.flex-col-reverse {
+	flex-direction: column-reverse;
+}
+
+.justify-start {
+	justify-content: flex-start;
+}
+.justify-center {
+	justify-content: center;
+}
+.justify-end {
+	justify-content: flex-end;
+}
+.justify-between {
+	justify-content: space-between;
+}
+.justify-around {
+	justify-content: space-around;
+}
+.justify-evenly {
+	justify-content: space-evenly;
+}
+
+.items-start {
+	align-items: flex-start;
+}
+.items-center {
+	align-items: center;
+}
+.items-end {
+	align-items: flex-end;
+}
+.items-stretch {
+	align-items: stretch;
+}
+
+.flex-wrap {
+	flex-wrap: wrap;
+}
+.flex-wrap-reverse {
+	flex-wrap: wrap-reverse;
+}
+.flex-nowrap {
+	flex-wrap: nowrap;
+}
+
+.self-start {
+	align-self: flex-start;
+}
+.self-center {
+	align-self: center;
+}
+.self-end {
+	align-self: flex-end;
+}
+.self-stretch {
+	align-self: stretch;
+}
+
+.flex-1 {
+	flex: 1 1 0%;
+}
+.flex-auto {
+	flex: 1 1 auto;
+}
+.flex-initial {
+	flex: 0 1 auto;
+}
+.flex-none {
+	flex: none;
+}
+
+.flex-grow {
+	flex-grow: 1;
+}
+.flex-grow-0 {
+	flex-grow: 0;
+}
+
+.flex-shrink {
+	flex-shrink: 1;
+}
+.flex-shrink-0 {
+	flex-shrink: 0;
+}
+
+.basis-auto {
+	flex-basis: auto;
+}
+.basis-full {
+	flex-basis: 100%;
+}
+.basis-1\/2 {
+	flex-basis: 50%;
+}
+.basis-1\/3 {
+	flex-basis: 33.3333%;
+}
+.basis-1\/4 {
+	flex-basis: 25%;
+}
+
+@each $breakpoint, $breakpoint-value in $breakpoints {
+	@include responsive($breakpoint) {
+		.s-#{$breakpoint}\:flex-row {
+			flex-direction: row !important;
+		}
+		.s-#{$breakpoint}\:flex-row-reverse {
+			flex-direction: row-reverse !important;
+		}
+		.s-#{$breakpoint}\:flex-col {
+			flex-direction: column !important;
+		}
+		.s-#{$breakpoint}\:flex-col-reverse {
+			flex-direction: column-reverse !important;
+		}
+	}
+
+	@include responsive($breakpoint) {
+		.s-#{$breakpoint}\:justify-start {
+			justify-content: flex-start !important;
+		}
+		.s-#{$breakpoint}\:justify-center {
+			justify-content: center !important;
+		}
+		.s-#{$breakpoint}\:justify-end {
+			justify-content: flex-end !important;
+		}
+		.s-#{$breakpoint}\:justify-between {
+			justify-content: space-between !important;
+		}
+		.s-#{$breakpoint}\:justify-around {
+			justify-content: space-around !important;
+		}
+		.s-#{$breakpoint}\:justify-evenly {
+			justify-content: space-evenly !important;
+		}
+	}
+
+	@include responsive($breakpoint) {
+		.s-#{$breakpoint}\:items-start {
+			align-items: flex-start !important;
+		}
+		.s-#{$breakpoint}\:items-center {
+			align-items: center !important;
+		}
+		.s-#{$breakpoint}\:items-end {
+			align-items: flex-end !important;
+		}
+		.s-#{$breakpoint}\:items-stretch {
+			align-items: stretch !important;
+		}
+	}
+
+	@include responsive($breakpoint) {
+		.s-#{$breakpoint}\:self-start {
+			align-self: flex-start !important;
+		}
+		.s-#{$breakpoint}\:self-center {
+			align-self: center !important;
+		}
+		.s-#{$breakpoint}\:self-end {
+			align-self: flex-end !important;
+		}
+		.s-#{$breakpoint}\:self-stretch {
+			align-self: stretch !important;
+		}
+	}
+
+	@include responsive($breakpoint) {
+		.s-#{$breakpoint}\:flex-grow {
+			flex-grow: 1 !important;
+		}
+		.s-#{$breakpoint}\:flex-grow-0 {
+			flex-grow: 0 !important;
+		}
+		.s-#{$breakpoint}\:flex-shrink {
+			flex-shrink: 1 !important;
+		}
+		.s-#{$breakpoint}\:flex-shrink-0 {
+			flex-shrink: 0 !important;
+		}
+	}
+
+	@include responsive($breakpoint) {
+		.s-#{$breakpoint}\:basis-auto {
+			flex-basis: auto !important;
+		}
+		.s-#{$breakpoint}\:basis-full {
+			flex-basis: 100% !important;
+		}
+		.s-#{$breakpoint}\:basis-1\/2 {
+			flex-basis: 50% !important;
+		}
+		.s-#{$breakpoint}\:basis-1\/3 {
+			flex-basis: 33.3333% !important;
+		}
+		.s-#{$breakpoint}\:basis-1\/4 {
+			flex-basis: 25% !important;
+		}
+	}
+}
+
+.grid {
+	display: grid;
+}
+.inline-grid {
+	display: inline-grid;
+}
+
+@for $i from 1 through 12 {
+	.grid-cols-#{$i} {
+		grid-template-columns: repeat(#{$i}, minmax(0, 1fr));
+	}
+}
+
+@for $i from 1 through 12 {
+	.grid-rows-#{$i} {
+		grid-template-rows: repeat(#{$i}, minmax(0, 1fr));
+	}
+}
+
+.auto-cols-min {
+	grid-auto-columns: min-content;
+}
+.auto-cols-max {
+	grid-auto-columns: max-content;
+}
+.auto-cols-fr {
+	grid-auto-columns: minmax(0, 1fr);
+}
+
+.auto-rows-min {
+	grid-auto-rows: min-content;
+}
+.auto-rows-max {
+	grid-auto-rows: max-content;
+}
+.auto-rows-fr {
+	grid-auto-rows: minmax(0, 1fr);
+}
+
+@for $i from 1 through 12 {
+	.col-span-#{$i} {
+		grid-column: span #{$i} / span #{$i};
+	}
+}
+
+@for $i from 1 through 13 {
+	.col-start-#{$i} {
+		grid-column-start: #{$i};
+	}
+}
+
+@for $i from 1 through 12 {
+	.row-span-#{$i} {
+		grid-row: span #{$i} / span #{$i};
+	}
+}
+
+@for $i from 1 through 13 {
+	.row-start-#{$i} {
+		grid-row-start: #{$i};
+	}
+}
+
+@each $key, $value in $objects-fit {
+	.object-#{$key} {
+		object-fit: $value;
+	}
+
+	@each $breakpoint, $breakpoint-value in $breakpoints {
+		@include responsive($breakpoint) {
+			.s-#{$breakpoint}\:object-#{$key} {
+				object-fit: $value;
+			}
+		}
+	}
+}
+
+.overflow-auto {
+	overflow: auto;
+}
+
+.overflow-hidden {
+	overflow: hidden;
+}
+
+.overflow-visible {
+	overflow: visible;
+}
+
+.overflow-scroll {
+	overflow: scroll;
+}
+
+.overflow-x-auto {
+	overflow-x: auto;
+}
+
+.overflow-y-auto {
+	overflow-y: auto;
+}
+
+.overflow-x-hidden {
+	overflow-x: hidden;
+}
+
+.overflow-y-hidden {
+	overflow-y: hidden;
+}
+
+.overflow-x-visible {
+	overflow-x: visible;
+}
+
+.overflow-y-visible {
+	overflow-y: visible;
+}
+
+.overflow-x-scroll {
+	overflow-x: scroll;
+}
+
+.overflow-y-scroll {
+	overflow-y: scroll;
+}
+
+@each $breakpoint, $breakpoint-value in $breakpoints {
+	@include responsive($breakpoint) {
+		.s-#{$breakpoint}\:overflow-auto {
+			overflow: auto !important;
+		}
+		.s-#{$breakpoint}\:overflow-hidden {
+			overflow: hidden !important;
+		}
+		.s-#{$breakpoint}\:overflow-visible {
+			overflow: visible !important;
+		}
+		.s-#{$breakpoint}\:overflow-scroll {
+			overflow: scroll !important;
+		}
+		.s-#{$breakpoint}\:overflow-x-auto {
+			overflow-x: auto !important;
+		}
+		.s-#{$breakpoint}\:overflow-y-auto {
+			overflow-y: auto !important;
+		}
+		.s-#{$breakpoint}\:overflow-x-hidden {
+			overflow-x: hidden !important;
+		}
+		.s-#{$breakpoint}\:overflow-y-hidden {
+			overflow-y: hidden !important;
+		}
+		.s-#{$breakpoint}\:overflow-x-visible {
+			overflow-x: visible !important;
+		}
+		.s-#{$breakpoint}\:overflow-y-visible {
+			overflow-y: visible !important;
+		}
+		.s-#{$breakpoint}\:overflow-x-scroll {
+			overflow-x: scroll !important;
+		}
+		.s-#{$breakpoint}\:overflow-y-scroll {
+			overflow-y: scroll !important;
+		}
+	}
+}
+
+@each $key, $val in $z-indexes {
+	.z-#{$key} {
+		z-index: $val;
+	}
+
+	@each $breakpoint, $breakpoint-value in $breakpoints {
+		@include responsive($breakpoint) {
+			.s-#{$breakpoint}\:z-#{$key} {
+				z-index: $val !important;
+			}
+		}
+	}
+}
+
+@each $key, $position in $positions {
+	.#{$key} {
+		position: $position !important;
+	}
+
+	@each $breakpoint, $breakpoint-value in $breakpoints {
+		@include responsive($breakpoint) {
+			.s-#{$breakpoint}\:#{$key} {
+				position: $position !important;
+			}
+		}
+	}
+}
+
+.inset-0 {
+	inset: 0;
+}
+
+@each $key, $value in $sizes {
+	.top-#{$key} {
+		top: $value;
+	}
+
+	.-top-#{$key} {
+		top: -$value;
+	}
+
+	.right-#{$key} {
+		right: $value;
+	}
+
+	.-right-#{$key} {
+		right: -$value;
+	}
+
+	.bottom-#{$key} {
+		bottom: $value;
+	}
+
+	.-bottom-#{$key} {
+		bottom: -$value;
+	}
+
+	.left-#{$key} {
+		left: $value;
+	}
+
+	.-left-#{$key} {
+		left: -$value;
+	}
+}

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { checkAuth } from "../api/auth";
+import logo from "../assets/Teambuilder.png";
 import { ReactSetState } from "../types/ReactTypes";
 import { UserStorage } from "../types/User";
 
@@ -28,7 +29,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 					const errorData = await response.json();
 					setUser(null);
 					setLoading(false);
-					navigate("/signin");
 					return;
 				}
 
@@ -38,17 +38,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 				console.error("Error fetching user:", error);
 				setUser(null);
 				setLoading(false);
-				navigate("/signin");
 			} finally {
 				setLoading(false);
 			}
 		};
 
 		fetchUser();
-	}, [navigate]);
+	}, []);
 
 	if (loading) {
-		return <div>Loading...</div>;
+		return (
+			<div className="h-screen flex items-center justify-center">
+				<img src={logo} className="w-16 h-16" alt="TeamBuilder Logo" />
+			</div>
+		);
 	}
 
 	return (
