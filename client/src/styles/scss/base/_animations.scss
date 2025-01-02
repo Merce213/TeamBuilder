@@ -85,3 +85,11 @@
 		}
 	}
 }
+
+@each $key, $value in $scales {
+	.hover\:scale-#{$key} {
+		&:hover {
+			transform: scale(#{$value});
+		}
+	}
+}

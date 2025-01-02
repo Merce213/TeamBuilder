@@ -22,7 +22,7 @@ const Sidebar = () => {
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
-	}, [isSidebarOpen]);
+	}, []);
 
 	return (
 		<>

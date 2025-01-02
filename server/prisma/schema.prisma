@@ -17,6 +17,7 @@ datasource db {
 // ------------- CHAMPIONS AND RELATED ENTITIES --------------
 model Champion {
     id             Int                    @id @default(autoincrement())
+    nameId         String                 @unique @db.VarChar(30)
     name           String                 @unique @db.VarChar(30)
     title          String                 @db.VarChar(50)
     blurb          String                 @db.Text

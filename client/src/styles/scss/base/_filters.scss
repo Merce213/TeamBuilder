@@ -1,0 +1,9 @@
+.blur {
+	filter: blur(8px);
+}
+
+@each $key, $value in $blurs {
+	.blur-#{$key} {
+		filter: blur($value);
+	}
+}
