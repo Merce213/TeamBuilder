@@ -156,6 +156,9 @@
 
 @each $breakpoint, $breakpoint-value in $breakpoints {
 	@include responsive($breakpoint) {
+		.s-#{$breakpoint}\:flex {
+			display: flex !important;
+		}
 		.s-#{$breakpoint}\:flex-row {
 			flex-direction: row !important;
 		}

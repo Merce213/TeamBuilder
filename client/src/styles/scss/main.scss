@@ -1,20 +1,10 @@
-@import "abstracts/variables";
-@import "abstracts/mixins";
+@import "abstracts/variables", "abstracts/mixins";
 
-@import "base/reset";
-@import "base/colors";
-@import "base/scrollbar";
-@import "base/typography";
-@import "base/borders";
-@import "base/shadows";
-@import "base/spacing";
-@import "base/sizes";
-@import "base/cursors";
-@import "base/animations";
+@import "base/reset", "base/colors", "base/scrollbar", "base/typography",
+	"base/borders", "base/shadows", "base/spacing", "base/sizes", "base/cursors",
+	"base/animations";
 
-@import "layout/display";
-@import "layout/header";
-@import "layout/popover";
+@import "layout/display", "layout/header", "layout/popover";
 
 @import "components/buttons";
 

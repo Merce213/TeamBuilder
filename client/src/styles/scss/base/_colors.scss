@@ -1,5 +1,13 @@
 @use "sass:color";
 
+.bg-transparent {
+	background-color: transparent !important;
+}
+
+.text-transparent {
+	color: transparent !important;
+}
+
 @each $key, $val in $colors {
 	.text-#{$key} {
 		color: $val !important;
