@@ -7,7 +7,7 @@ const LayoutUser = () => {
 		<>
 			<NavbarUser />
 			<Sidebar />
-			<main className="p-4 s-sm:ml-64 mt-18">
+			<main>
 				<Outlet />
 			</main>
 		</>

@@ -150,6 +150,9 @@
 	&-fit {
 		height: fit-content;
 	}
+	&-screen-navbar {
+		height: calc(100vh - 64px);
+	}
 }
 
 .min {

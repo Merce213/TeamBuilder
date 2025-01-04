@@ -4,13 +4,12 @@ import App from "./App.tsx";
 import { AuthProvider } from "./contexts/AuthContext.tsx";
 import "./styles/css/main.min.css";
 import { LayoutProvider } from "./contexts/LayoutContext.tsx";
+import Providers from "./contexts/Providers.tsx";
 
 createRoot(document.getElementById("root")!).render(
 	<BrowserRouter>
-		<AuthProvider>
-			<LayoutProvider>
-				<App />
-			</LayoutProvider>
-		</AuthProvider>
+		<Providers>
+			<App />
+		</Providers>
 	</BrowserRouter>
 );

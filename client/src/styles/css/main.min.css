@@ -4190,6 +4190,14 @@ h6 {
   white-space: nowrap;
 }
 
+.underline {
+  text-decoration: underline;
+}
+
+.hover\:underline:hover {
+  text-decoration: underline;
+}
+
 .border {
   border-width: 1px;
   border-style: solid;
@@ -25441,6 +25449,9 @@ h6 {
 .h-fit {
   height: fit-content;
 }
+.h-screen-navbar {
+  height: calc(100vh - 64px);
+}
 
 .min-h-screen {
   min-height: 100vh;
@@ -25820,32 +25831,64 @@ h6 {
   filter: blur(8px);
 }
 
+.backdrop-blur {
+  backdrop-filter: blur(8px);
+}
+
 .blur-none {
   filter: blur(0);
+}
+
+.backdrop-blur-none {
+  backdrop-filter: blur(0);
 }
 
 .blur-sm {
   filter: blur(4px);
 }
 
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+}
+
 .blur-md {
   filter: blur(12px);
+}
+
+.backdrop-blur-md {
+  backdrop-filter: blur(12px);
 }
 
 .blur-lg {
   filter: blur(16px);
 }
 
+.backdrop-blur-lg {
+  backdrop-filter: blur(16px);
+}
+
 .blur-xl {
   filter: blur(24px);
+}
+
+.backdrop-blur-xl {
+  backdrop-filter: blur(24px);
 }
 
 .blur-2xl {
   filter: blur(40px);
 }
 
+.backdrop-blur-2xl {
+  backdrop-filter: blur(40px);
+}
+
 .blur-3xl {
   filter: blur(64px);
+}
+
+.backdrop-blur-3xl {
+  backdrop-filter: blur(64px);
 }
 
 .animate-none {
@@ -32403,6 +32446,7 @@ h6 {
   top: 0;
   right: 0;
   width: 100%;
+  z-index: 10;
 }
 @media (min-width: 640px) {
   .header {

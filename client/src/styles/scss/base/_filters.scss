@@ -2,8 +2,16 @@
 	filter: blur(8px);
 }
 
+.backdrop-blur {
+	backdrop-filter: blur(8px);
+}
+
 @each $key, $value in $blurs {
 	.blur-#{$key} {
 		filter: blur($value);
+	}
+
+	.backdrop-blur-#{$key} {
+		backdrop-filter: blur($value);
 	}
 }
