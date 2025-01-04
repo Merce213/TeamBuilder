@@ -81,7 +81,9 @@ export const getChampions = async (req: Request, res: Response) => {
 			);
 			if (missingTags.length > 0) {
 				res.status(404).json({
-					message: `Tags not found: ${missingTags.join(", ")}`,
+					error: `Tag${
+						missingTags.length > 1 ? "s" : ""
+					} not found: ${missingTags.join(", ")}`,
 				});
 				return;
 			}
