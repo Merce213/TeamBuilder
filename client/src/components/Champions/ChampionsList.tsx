@@ -27,6 +27,9 @@ const ChampionsList = () => {
 		return <div>Error: {error.message}</div>;
 	}
 
+	const lowerCaseNameId = (champion: Champion) =>
+		champion.nameId.toLowerCase();
+
 	return (
 		<div aria-label="champions-container">
 			<h2 className="text-2xl font-bold mb-4">
@@ -36,7 +39,7 @@ const ChampionsList = () => {
 				{champions?.length === 0 && <p>No champions found</p>}
 				{champions?.map((champion: Champion) => (
 					<Link
-						to={`/champions/${champion.nameId.toLowerCase()}`}
+						to={`/champions/${lowerCaseNameId(champion)}`}
 						key={champion.id}
 					>
 						<div className="flex items-center justify-center overflow-hidden">

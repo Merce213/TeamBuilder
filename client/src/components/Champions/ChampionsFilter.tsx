@@ -74,7 +74,7 @@ const ChampionsFilter = () => {
 				</div>
 
 				<div className="flex flex-col gap-2">
-					<label className="text-sm">Tags</label>
+					<label className="text-sm">Roles</label>
 					<div className="flex flex-wrap gap-2">
 						{tagOptions.map((tag) => (
 							<button

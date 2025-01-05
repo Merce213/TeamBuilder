@@ -46,10 +46,18 @@
 	font-style: normal;
 }
 
+.font-italic {
+	font-style: italic !important;
+}
+
 .truncate {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+
+.uppercase {
+	text-transform: uppercase;
 }
 
 .underline {

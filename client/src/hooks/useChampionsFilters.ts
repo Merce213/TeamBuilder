@@ -36,7 +36,7 @@ export function useChampionsFilters() {
 
 			setSearchParams(newParams);
 		},
-		[setSearchParams]
+		[searchParams]
 	);
 
 	return {
