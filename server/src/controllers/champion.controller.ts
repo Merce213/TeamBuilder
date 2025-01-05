@@ -81,7 +81,9 @@ export const getChampions = async (req: Request, res: Response) => {
 			);
 			if (missingTags.length > 0) {
 				res.status(404).json({
-					message: `Tags not found: ${missingTags.join(", ")}`,
+					error: `Tag${
+						missingTags.length > 1 ? "s" : ""
+					} not found: ${missingTags.join(", ")}`,
 				});
 				return;
 			}
@@ -122,6 +124,58 @@ export const getChampions = async (req: Request, res: Response) => {
 		}
 
 		res.status(200).json(formattedChampions);
+	} catch (error) {
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
+export const getChampion = async (req: Request, res: Response) => {
+	const { nameId } = req.params;
+
+	if (!nameId) {
+		res.status(400).json({ error: "Missing champion nameId params" });
+		return;
+	}
+
+	if (typeof nameId !== "string") {
+		res.status(400).json({ error: "Invalid type for champion nameId" });
+		return;
+	}
+
+	try {
+		const champion = await prisma.champion.findFirst({
+			where: {
+				nameId: {
+					equals: nameId,
+					mode: "insensitive",
+				},
+			},
+			include: {
+				lanes: true,
+				tags: {
+					include: {
+						tag: true,
+					},
+				},
+				info: true,
+				stats: true,
+				skins: true,
+				image: true,
+			},
+		});
+
+		if (!champion) {
+			res.status(404).json({ error: "Champion not found" });
+			return;
+		}
+
+		const formattedChampion = {
+			...champion,
+			tags: champion.tags.map((tagEntry) => tagEntry.tag.name),
+			lanes: champion.lanes.map((lane) => lane.lane),
+		};
+
+		res.status(200).json(formattedChampion);
 	} catch (error) {
 		res.status(500).json({ error: "Internal Server Error" });
 	}

@@ -4,8 +4,7 @@ import { ChampionApi } from "../types/api-champion";
 import keys from "../utils/keys";
 
 const prisma = new PrismaClient();
-const BASE_URL =
-	keys.ddragonApiKey;
+const BASE_URL = keys.ddragonApiKey;
 
 const debugMode = process.env.NODE_ENV === "development";
 
@@ -38,6 +37,7 @@ async function importChampions() {
 
 			const newChampion = await prisma.champion.create({
 				data: {
+					nameId: champion.id,
 					name: championDetails.name,
 					title: championDetails.title,
 					blurb: championDetails.blurb,

@@ -2,10 +2,10 @@
 
 @import "base/reset", "base/colors", "base/scrollbar", "base/typography",
 	"base/borders", "base/shadows", "base/spacing", "base/sizes", "base/cursors",
-	"base/animations";
+	"base/effects", "base/filters", "base/animations";
 
-@import "layout/display", "layout/header", "layout/popover";
+@import "layout/display", "layout/header", "layout/popover", "layout/carousel";
 
 @import "components/buttons";
 
-@import "pages/home";
+@import "pages/home", "pages/champions";

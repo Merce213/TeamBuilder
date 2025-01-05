@@ -12,7 +12,7 @@ const Navbar = () => {
 		: "bg-primary hover:bg-primary-dark-1";
 
 	return (
-		<header className="fixed top-0 left-0 w-full bg-gray border-b border-gray-light-3">
+		<header className="fixed z-10 top-0 left-0 w-full bg-gray border-b border-gray-light-3">
 			<nav className="px-3 container">
 				<div className="flex items-center justify-between">
 					<div className="flex items-center justify-start gap-3">

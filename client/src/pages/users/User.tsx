@@ -14,7 +14,8 @@ const User = () => {
 				const response = await fetchWithRefreshAndRetry(
 					`${keys.API_URL}/users/${userId}`
 				);
-				setUser(response);
+				const data = await response.json();
+				setUser(data);
 			} catch (error) {
 				console.error("Error fetching user:", error);
 			} finally {
@@ -29,7 +30,8 @@ const User = () => {
 			const response = await fetchWithRefreshAndRetry(
 				`${keys.API_URL}/users/${userId}`
 			);
-			setUser(response);
+			const data = await response.json();
+			setUser(data);
 		} catch (error) {
 			console.error("Error fetching user:", error);
 		} finally {
@@ -37,11 +39,10 @@ const User = () => {
 		}
 	};
 
-	console.log("userData", user);
-
 	if (!user) {
 		return <div>User not found</div>;
 	}
+
 	return (
 		<div>
 			<h1>User</h1>
