@@ -1,6 +1,6 @@
 import { CircleUserRound } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { signOut } from "../../api/auth";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -9,6 +9,8 @@ const UserMenu = ({ className }: { className?: string }) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const userMenuRef = useRef<HTMLDivElement | null>(null);
 	const triggerRef = useRef<HTMLDivElement | null>(null);
+
+	const navigate = useNavigate();
 
 	const handleSignOut = async () => {
 		try {
@@ -21,6 +23,7 @@ const UserMenu = ({ className }: { className?: string }) => {
 
 			// toast.success("Signed out successfully");
 			setUser(null);
+			navigate("/");
 		} catch (error) {
 			console.error("Error:", error);
 			// toast.error("Error signing out");

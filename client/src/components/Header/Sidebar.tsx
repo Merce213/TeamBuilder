@@ -1,12 +1,36 @@
 import { SeparatorHorizontal, SquarePlus } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useGroup } from "../../contexts/GroupContext";
 import { useLayout } from "../../contexts/LayoutContext";
+import { Group } from "../../types/Group";
+import CreateGroupModal from "../Groups/CreateGroupModal";
 import Popover from "../Popover";
 
 const Sidebar = () => {
 	const { isSidebarOpen, setSidebarOpen } = useLayout();
 	const sidebarRef = useRef<HTMLDivElement | null>(null);
+
+	const [isClickedPopover, setIsClickedPopover] = useState(false);
+	const [openModalCreateGroup, setOpenModalCreateGroup] = useState(false);
+
+	const handleOpenModalCreateGroup = () => {
+		setOpenModalCreateGroup(!openModalCreateGroup);
+	};
+
+	const handleClickPopover = () => {
+		setIsClickedPopover(!isClickedPopover);
+		setSidebarOpen(false);
+	};
+
+	const {
+		groups,
+		isLoadingGroups,
+		groupsError,
+		groupData,
+		selectedGroupId,
+		handleSelectGroup,
+	} = useGroup();
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -40,6 +64,7 @@ const Sidebar = () => {
 			>
 				<div className="h-full flex flex-col justify-between">
 					<Popover
+						isClicked={isClickedPopover}
 						position="bottom"
 						content={
 							<div className="flex flex-col p-2">
@@ -103,29 +128,58 @@ const Sidebar = () => {
 							</NavLink>
 						</div>
 					</div>
+
 					<Popover
+						isClicked={isClickedPopover}
 						position="top"
 						content={
 							<div className="flex flex-col p-2">
-								<div className="overflow-y-auto max-h-40">
-									<p className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer">
-										Group 1
+								{isLoadingGroups ? (
+									<p>Loading groups...</p>
+								) : groupsError ? (
+									<p className="text-danger">
+										Error loading groups
 									</p>
-									<p className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer">
-										Group 2
-									</p>
-									<p className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer">
-										Group 3
-									</p>
-									<p className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer">
-										Group 4
-									</p>
-									<p className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer">
-										Group 5
-									</p>
-								</div>
-								<div className="border-t border-gray-light-3 text-primary">
-									<div className="py-2 ps-2 hover:bg-gray-light-1 flex w-full cursor-pointer">
+								) : (
+									<div className="overflow-y-auto max-h-40">
+										{groups
+											?.filter(
+												(group) =>
+													group.id !== selectedGroupId
+											)
+											.map((group: Group) => (
+												<p
+													key={group.id}
+													className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer"
+													onClick={() => {
+														handleSelectGroup(
+															group
+														);
+														handleClickPopover();
+													}}
+												>
+													{group.name}
+												</p>
+											))}
+										<p className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer">
+											Group X
+										</p>
+										<p className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer">
+											Group Y
+										</p>
+										<p className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer">
+											Group Z
+										</p>
+									</div>
+								)}
+								<div
+									className="border-t border-gray-light-3 text-primary"
+									onClick={handleOpenModalCreateGroup}
+								>
+									<div
+										className="py-2 ps-2 hover:bg-gray-light-1 flex w-full cursor-pointer"
+										onClick={handleClickPopover}
+									>
 										<SquarePlus />
 										<p className="ps-2">Create Group</p>
 									</div>
@@ -134,12 +188,21 @@ const Sidebar = () => {
 						}
 					>
 						<div className="flex items-center justify-between w-full text-primary">
-							<p className="font-sora">Select a Group</p>
+							<p className="font-sora">
+								{groupData?.name || "Select a Group"}
+							</p>
 							<SeparatorHorizontal />
 						</div>
 					</Popover>
 				</div>
 			</aside>
+
+			{openModalCreateGroup && (
+				<CreateGroupModal
+					openModalCreateGroup={openModalCreateGroup}
+					setOpenModalCreateGroup={setOpenModalCreateGroup}
+				/>
+			)}
 		</>
 	);
 };
