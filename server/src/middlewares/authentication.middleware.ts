@@ -114,6 +114,9 @@ export const refreshAuthenticate = async (
 			res.clearCookie(TokenType.RefreshToken, {
 				httpOnly: true,
 			});
+			res.clearCookie(TokenType.AccessToken, {
+				httpOnly: true,
+			});
 			res.status(401).json({ error: "Invalid or expired refresh token" });
 			return;
 		}

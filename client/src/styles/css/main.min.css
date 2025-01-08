@@ -25927,6 +25927,10 @@ h6 {
     max-height: fit-content !important;
   }
 }
+.resize-none {
+  resize: none;
+}
+
 .cursor-default {
   cursor: default !important;
 }

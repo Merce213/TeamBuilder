@@ -1,3 +1,4 @@
+import { GroupRole } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import { prisma } from "../client";
@@ -58,6 +59,21 @@ export const signUp = async (req: Request, res: Response) => {
 				email: parsedData.email,
 				password: hashedPassword,
 				role: parsedData.role,
+			},
+		});
+
+		const group = await prisma.group.create({
+			data: {
+				name: `${user.username}'s group`,
+				createdById: user.id,
+				members: {
+					create: [
+						{
+							userId: user.id,
+							role: GroupRole.OWNER,
+						},
+					],
+				},
 			},
 		});
 

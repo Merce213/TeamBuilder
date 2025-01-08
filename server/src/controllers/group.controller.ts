@@ -1,6 +1,6 @@
+import { GroupRole, Prisma, UserRole } from "@prisma/client";
 import { Request, Response } from "express";
 import { prisma } from "../client";
-import { GroupRole, Prisma, UserRole } from "@prisma/client";
 
 export const createGroup = async (req: Request, res: Response) => {
 	try {
@@ -8,7 +8,13 @@ export const createGroup = async (req: Request, res: Response) => {
 		const { name, description, members } = req.body;
 
 		const existingGroup = await prisma.group.findFirst({
-			where: { name, createdById: userId },
+			where: {
+				name: {
+					equals: name,
+					mode: "insensitive",
+				},
+				createdById: userId,
+			},
 		});
 		if (existingGroup) {
 			res.status(409).json({

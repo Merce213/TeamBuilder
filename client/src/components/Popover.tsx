@@ -1,15 +1,17 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface PopoverProps {
 	children: React.ReactNode;
 	content: React.ReactNode;
 	position: "top" | "bottom";
+	isClicked: boolean;
 }
 
 const Popover = ({
 	children,
 	content,
 	position,
+	isClicked,
 }: PopoverProps): JSX.Element => {
 	const [isVisible, setIsVisible] = useState<boolean>(false);
 	const popoverRef = useRef<HTMLDivElement | null>(null);
@@ -42,6 +44,12 @@ const Popover = ({
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, []);
+
+	useEffect(() => {
+		if (isClicked) {
+			setIsVisible(false);
+		}
+	}, [isClicked]);
 
 	return (
 		<div
