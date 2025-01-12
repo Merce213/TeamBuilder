@@ -25600,6 +25600,9 @@ h6 {
 .h-screen-navbar {
   height: calc(100vh - 64px);
 }
+.h-navbar {
+  height: calc(100vh - 173px);
+}
 
 .min-h-screen {
   min-height: 100vh;
@@ -25626,6 +25629,9 @@ h6 {
   .min-h-bg {
     min-height: 44rem;
   }
+}
+.min-h-navbar {
+  min-height: calc(100vh - 90px);
 }
 
 .max-h-screen {

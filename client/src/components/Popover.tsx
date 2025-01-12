@@ -43,7 +43,7 @@ const Popover = ({
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
-	}, []);
+	}, [popoverRef, triggerRef, isVisible, isClicked]);
 
 	useEffect(() => {
 		if (isClicked) {

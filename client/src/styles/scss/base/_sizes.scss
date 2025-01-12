@@ -153,6 +153,9 @@
 	&-screen-navbar {
 		height: calc(100vh - 64px);
 	}
+	&-navbar {
+		height: calc(100vh - 173px);
+	}
 }
 
 .min {
@@ -180,6 +183,9 @@
 		@include responsive("sm") {
 			min-height: 44rem;
 		}
+	}
+	&-h-navbar {
+		min-height: calc(100vh - 90px);
 	}
 }
 
