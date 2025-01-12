@@ -46,7 +46,7 @@ const Sidebar = () => {
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
-	}, []);
+	}, [sidebarRef]);
 
 	return (
 		<>
@@ -100,10 +100,10 @@ const Sidebar = () => {
 						</div>
 					</Popover>
 
-					<div className="flex items-center p-3 flex-1">
+					<div className="flex flex-col justify-center p-3 gap-2">
 						<div className="flex flex-col">
 							<NavLink
-								to="/test"
+								to="/champions"
 								className={({ isActive }) =>
 									`flex items-center p-1 rounded-lg transition-all duration-75 ${
 										isActive
@@ -112,10 +112,17 @@ const Sidebar = () => {
 									}`
 								}
 							>
-								<span>Dashboard</span>
+								<span>Champions</span>
 							</NavLink>
+						</div>
+
+						<div className="flex flex-col">
+							<p className="text-sm text-gray-light-7">
+								Dashboard
+							</p>
 							<NavLink
-								to={"/test2"}
+								to="/dashboard"
+								end
 								className={({ isActive }) =>
 									`flex items-center p-1 rounded-lg transition-all duration-75 ${
 										isActive
@@ -125,6 +132,70 @@ const Sidebar = () => {
 								}
 							>
 								<span>Home</span>
+							</NavLink>
+							<NavLink
+								to={"/dashboard/group"}
+								className={({ isActive }) =>
+									`flex items-center p-1 rounded-lg transition-all duration-75 ${
+										isActive
+											? "text-primary"
+											: "text-text hover:text-primary"
+									}`
+								}
+							>
+								<span>Group</span>
+							</NavLink>
+							<NavLink
+								to={"/dashboard/team"}
+								className={({ isActive }) =>
+									`flex items-center p-1 rounded-lg transition-all duration-75 ${
+										isActive
+											? "text-primary"
+											: "text-text hover:text-primary"
+									}`
+								}
+							>
+								<span>Team</span>
+							</NavLink>
+						</div>
+
+						<div className="flex flex-col">
+							<p className="text-sm text-gray-light-7">Account</p>
+							<NavLink
+								to="/dashboard/profile"
+								className={({ isActive }) =>
+									`flex items-center p-1 rounded-lg transition-all duration-75 ${
+										isActive
+											? "text-primary"
+											: "text-text hover:text-primary"
+									}`
+								}
+							>
+								<span>Profile</span>
+							</NavLink>
+							<NavLink
+								to={"/dashboard/all-groups"}
+								className={({ isActive }) =>
+									`flex items-center p-1 rounded-lg transition-all duration-75 ${
+										isActive
+											? "text-primary"
+											: "text-text hover:text-primary"
+									}`
+								}
+							>
+								<span>All Groups</span>
+							</NavLink>
+							<NavLink
+								to={"/dashboard/all-teams"}
+								className={({ isActive }) =>
+									`flex items-center p-1 rounded-lg transition-all duration-75 ${
+										isActive
+											? "text-primary"
+											: "text-text hover:text-primary"
+									}`
+								}
+							>
+								<span>All Teams</span>
 							</NavLink>
 						</div>
 					</div>

@@ -94,7 +94,7 @@ const UserMenu = ({ className }: { className?: string }) => {
 							Dashboard
 						</NavLink>
 						<NavLink
-							to="/profile"
+							to="/dashboard/profile"
 							className="block ps-2 py-2 hover:bg-gray-light-1"
 						>
 							Profile

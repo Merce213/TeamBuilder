@@ -6,9 +6,10 @@ import SignUp from "./pages/auth/SignUp";
 import Champion from "./pages/Champion";
 import Champions from "./pages/Champions";
 import Home from "./pages/Home";
+import About from "./pages/legal/About";
+import Privacy from "./pages/legal/Privacy";
+import Terms from "./pages/legal/Terms";
 import Profile from "./pages/Profile";
-import Test from "./pages/Test";
-import Test2 from "./pages/Test2";
 import User from "./pages/users/User";
 
 const App = () => {
@@ -22,11 +23,12 @@ const App = () => {
 					<Route path="/signin" element={<SignIn />} />
 					<Route path="/signup" element={<SignUp />} />
 					<Route path="/users/:userId" element={<User />} />
+					<Route path="/about" element={<About />} />
+					<Route path="/terms-and-conditions" element={<Terms />} />
+					<Route path="/privacy-policy" element={<Privacy />} />
 				</Route>
 				<Route element={<LayoutUser />}>
-					<Route path="/test" element={<Test />} />
-					<Route path="/test2" element={<Test2 />} />
-					<Route path="/profile" element={<Profile />} />
+					<Route path="/dashboard/profile" element={<Profile />} />
 				</Route>
 			</Routes>
 		</>
