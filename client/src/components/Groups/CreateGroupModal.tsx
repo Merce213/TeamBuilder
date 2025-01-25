@@ -1,14 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
+import { toast } from "sonner";
 import { createGroup } from "../../api/groups";
 import { useAuth } from "../../contexts/AuthContext";
 import { GroupCreate, GroupRole } from "../../types/Group";
+import { ReactSetState } from "../../types/ReactTypes";
 import Modal from "../Modal";
-import { toast } from "sonner";
 
 interface CreateGroupModalProps {
 	openModalCreateGroup: boolean;
-	setOpenModalCreateGroup: React.Dispatch<React.SetStateAction<boolean>>;
+	setOpenModalCreateGroup: ReactSetState<boolean>;
 }
 
 const CreateGroupModal = ({
