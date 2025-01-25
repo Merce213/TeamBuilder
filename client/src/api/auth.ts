@@ -39,7 +39,7 @@ export const signIn = async (data: { username: string; password: string }) => {
 };
 
 export const signOut = async () => {
-	const response = await fetchWithRefreshOnly(
+	const response = await fetchWithRefreshAndRetry(
 		`${keys.API_URL}/auth/signout`,
 		{
 			method: "POST",

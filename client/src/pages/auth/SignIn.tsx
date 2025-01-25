@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { signIn } from "../../api/auth";
 
 const SignIn = () => {
@@ -9,6 +9,7 @@ const SignIn = () => {
 	});
 	const [errors, setErrors] = useState<Record<string, string>>({});
 	const [errorMessage, setErrorMessage] = useState<string>("");
+	const { state } = useLocation();
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
@@ -41,7 +42,7 @@ const SignIn = () => {
 				return;
 			}
 
-			window.location.href = "/";
+			window.location.href = state?.path || "/";
 		} catch (error) {
 			console.error("Error:", error);
 			setErrorMessage("An error occurred while signing in.");

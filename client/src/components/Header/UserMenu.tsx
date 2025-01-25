@@ -16,17 +16,13 @@ const UserMenu = ({ className }: { className?: string }) => {
 		try {
 			const response = await signOut();
 			if (!response.ok) {
-				const errorData = await response.json();
-				// toast.error("Error signing out");
 				return;
 			}
 
-			// toast.success("Signed out successfully");
 			setUser(null);
 			navigate("/");
 		} catch (error) {
 			console.error("Error:", error);
-			// toast.error("Error signing out");
 		}
 	};
 
@@ -90,14 +86,16 @@ const UserMenu = ({ className }: { className?: string }) => {
 						<NavLink
 							to="/dashboard"
 							className="block ps-2 py-2 hover:bg-gray-light-1"
+							onClick={() => setIsOpen(false)}
 						>
 							Dashboard
 						</NavLink>
 						<NavLink
-							to="/dashboard/profile"
+							to="/dashboard/settings"
 							className="block ps-2 py-2 hover:bg-gray-light-1"
+							onClick={() => setIsOpen(false)}
 						>
-							Profile
+							Settings
 						</NavLink>
 						<span
 							className="block ps-2 py-2 text-danger hover:bg-danger-dark-8 cursor-pointer"

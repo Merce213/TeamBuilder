@@ -160,9 +160,11 @@ const Sidebar = () => {
 						</div>
 
 						<div className="flex flex-col">
-							<p className="text-sm text-gray-light-7">Account</p>
+							<p className="text-sm text-gray-light-7">
+								Settings
+							</p>
 							<NavLink
-								to="/dashboard/profile"
+								to="/dashboard/settings"
 								className={({ isActive }) =>
 									`flex items-center p-1 rounded-lg transition-all duration-75 ${
 										isActive
@@ -171,31 +173,7 @@ const Sidebar = () => {
 									}`
 								}
 							>
-								<span>Profile</span>
-							</NavLink>
-							<NavLink
-								to={"/dashboard/all-groups"}
-								className={({ isActive }) =>
-									`flex items-center p-1 rounded-lg transition-all duration-75 ${
-										isActive
-											? "text-primary"
-											: "text-text hover:text-primary"
-									}`
-								}
-							>
-								<span>All Groups</span>
-							</NavLink>
-							<NavLink
-								to={"/dashboard/all-teams"}
-								className={({ isActive }) =>
-									`flex items-center p-1 rounded-lg transition-all duration-75 ${
-										isActive
-											? "text-primary"
-											: "text-text hover:text-primary"
-									}`
-								}
-							>
-								<span>All Teams</span>
+								<span>Settings</span>
 							</NavLink>
 						</div>
 					</div>

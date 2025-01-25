@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import videoBg from "../assets/videos/videoBg.mp4";
+import { useAuth } from "../contexts/AuthContext";
 
 const Home = () => {
+	const { user } = useAuth();
+
 	return (
 		<div className="relative w-full h-screen-navbar mt-16">
 			<div
@@ -29,12 +32,21 @@ const Home = () => {
 							compositions for your favorite game
 						</p>
 						<div className="flex flex-col gap-2">
-							<Link
-								to={"/signup"}
-								className="btn-primary p-2 hover:text-text-dark-2 hover:bg-primary-dark-3"
-							>
-								Get Started
-							</Link>
+							{!user ? (
+								<Link
+									to={"/signup"}
+									className="btn-primary p-2 hover:text-text-dark-2 hover:bg-primary-dark-3"
+								>
+									Get Started
+								</Link>
+							) : (
+								<Link
+									to={"/dashboard"}
+									className="btn-primary p-2 hover:text-text-dark-2 hover:bg-primary-dark-3"
+								>
+									Dashboard
+								</Link>
+							)}
 						</div>
 					</div>
 				</div>
