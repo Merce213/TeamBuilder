@@ -2,24 +2,22 @@ import { Router } from "express";
 import {
 	deleteUser,
 	getAllUsers,
+	getFavoriteChampions,
+	getFavoriteLanes,
 	getUser,
 	searchUsers,
+	updateFavoriteChampions,
+	updateFavoriteLanes,
 	updateUser,
-	addFavoriteLanes,
-	removeFavoriteLanes,
-	addFavoriteChampions,
-	removeFavoriteChampions,
 } from "../controllers/user.controller";
 import { authenticate } from "../middlewares/authentication.middleware";
-import {
-	checkAuthorization,
-	checkUserInParamsExists,
-} from "../middlewares/authorization.middleware";
+import { checkAuthorization } from "../middlewares/authorization.middleware";
 import { validateData } from "../middlewares/validation.middleware";
 import {
+	GetSummonerInfoSchema,
 	UserUpdateSchema,
-	addOrRemoveFavoriteLanesSchema,
-	addOrRemoveFavoriteChampionsSchema,
+	updateFavoriteChampionsSchema,
+	updateFavoriteLanesSchema,
 } from "../schemas/user.schema";
 
 const router: Router = Router();
@@ -41,45 +39,33 @@ router.patch(
 router.delete("/:userId", [authenticate, checkAuthorization()], deleteUser);
 
 // Favorite's User routes
-router.post(
+router.get(
+	"/:userId/favorite-lanes",
+	[authenticate, validateData(GetSummonerInfoSchema), checkAuthorization()],
+	getFavoriteLanes
+);
+router.get(
+	"/:userId/favorite-champions",
+	[authenticate, validateData(GetSummonerInfoSchema), checkAuthorization()],
+	getFavoriteChampions
+);
+router.put(
 	"/:userId/favorite-lanes",
 	[
 		authenticate,
-		validateData(addOrRemoveFavoriteLanesSchema),
-		checkUserInParamsExists,
+		validateData(updateFavoriteLanesSchema),
 		checkAuthorization(),
 	],
-	addFavoriteLanes
+	updateFavoriteLanes
 );
-router.delete(
-	"/:userId/favorite-lanes",
-	[
-		authenticate,
-		validateData(addOrRemoveFavoriteLanesSchema),
-		checkUserInParamsExists,
-		checkAuthorization(),
-	],
-	removeFavoriteLanes
-);
-router.post(
+router.put(
 	"/:userId/favorite-champions",
 	[
 		authenticate,
-		validateData(addOrRemoveFavoriteChampionsSchema),
-		checkUserInParamsExists,
+		validateData(updateFavoriteChampionsSchema),
 		checkAuthorization(),
 	],
-	addFavoriteChampions
-);
-router.delete(
-	"/:userId/favorite-champions",
-	[
-		authenticate,
-		validateData(addOrRemoveFavoriteChampionsSchema),
-		checkUserInParamsExists,
-		checkAuthorization(),
-	],
-	removeFavoriteChampions
+	updateFavoriteChampions
 );
 
 export default router;

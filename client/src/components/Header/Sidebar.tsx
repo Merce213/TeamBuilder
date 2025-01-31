@@ -59,7 +59,7 @@ const Sidebar = () => {
 				className={`fixed top-0 left-0 z-40 border-r border-gray-light-3 w-64 h-screen transition-all bg-gray ${
 					isSidebarOpen
 						? "translate-x-0"
-						: "s-sm:translate-x-0 -translate-x-full"
+						: "s-md:translate-x-0 -translate-x-full"
 				}`}
 			>
 				<div className="h-full flex flex-col justify-between">
@@ -160,9 +160,11 @@ const Sidebar = () => {
 						</div>
 
 						<div className="flex flex-col">
-							<p className="text-sm text-gray-light-7">Account</p>
+							<p className="text-sm text-gray-light-7">
+								Settings
+							</p>
 							<NavLink
-								to="/dashboard/profile"
+								to="/dashboard/settings"
 								className={({ isActive }) =>
 									`flex items-center p-1 rounded-lg transition-all duration-75 ${
 										isActive
@@ -171,31 +173,7 @@ const Sidebar = () => {
 									}`
 								}
 							>
-								<span>Profile</span>
-							</NavLink>
-							<NavLink
-								to={"/dashboard/all-groups"}
-								className={({ isActive }) =>
-									`flex items-center p-1 rounded-lg transition-all duration-75 ${
-										isActive
-											? "text-primary"
-											: "text-text hover:text-primary"
-									}`
-								}
-							>
-								<span>All Groups</span>
-							</NavLink>
-							<NavLink
-								to={"/dashboard/all-teams"}
-								className={({ isActive }) =>
-									`flex items-center p-1 rounded-lg transition-all duration-75 ${
-										isActive
-											? "text-primary"
-											: "text-text hover:text-primary"
-									}`
-								}
-							>
-								<span>All Teams</span>
+								<span>Settings</span>
 							</NavLink>
 						</div>
 					</div>

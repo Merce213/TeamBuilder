@@ -32614,7 +32614,7 @@ h6 {
   width: 100%;
   z-index: 10;
 }
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .header {
     width: calc(100% - 256px);
   }

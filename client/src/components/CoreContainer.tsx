@@ -8,7 +8,7 @@ const CoreContainer = ({
 	className?: string;
 }) => {
 	return (
-		<div className={["p-4 s-sm:ml-64 mt-16", className].join(" ")}>
+		<div className={["p-4 s-md:ml-64 mt-16", className].join(" ")}>
 			{children}
 		</div>
 	);

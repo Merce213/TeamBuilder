@@ -1,3 +1,4 @@
+import { updateFavoriteLanes } from "./../controllers/user.controller";
 import { z } from "zod";
 
 export const UserSignUpSchema = z.object({
@@ -85,26 +86,46 @@ export const ChangeForgottenPasswordSchema = z.object({
 	}),
 });
 
-export const addOrRemoveFavoriteLanesSchema = z.object({
+// SUMMONERS
+export const updateFavoriteLanesSchema = z.object({
 	params: z.object({
 		userId: z.string().min(1, "User ID is required"),
 	}),
 	body: z.object({
 		lanes: z
 			.array(z.string())
-			.min(1, "You must choose at least one lane")
 			.max(2, "Cannot have more than 2 favorite lanes"),
 	}),
 });
 
-export const addOrRemoveFavoriteChampionsSchema = z.object({
+export const updateFavoriteChampionsSchema = z.object({
 	params: z.object({
 		userId: z.string().min(1, "User ID is required"),
 	}),
 	body: z.object({
 		champions: z
 			.array(z.string())
-			.min(1, "You must choose at least one champion")
-			.max(5, "Cannot have more than 5 favorite champions"),
+			.max(3, "Cannot have more than 3 favorite champions"),
+	}),
+});
+
+export const GetSummonerInfoSchema = z.object({
+	params: z.object({
+		userId: z.string().min(1, "User ID is required"),
+	}),
+});
+
+export const LinkSummonerToUserSchema = z.object({
+	params: z.object({
+		userId: z.string().min(1, "User ID is required"),
+	}),
+	body: z.object({
+		summonerName: z
+			.string({ required_error: "Summoner name is required" })
+			.regex(
+				/^(.+)#(.+)$/,
+				"Summoner name must contain at least one character before and after #"
+			)
+			.trim(),
 	}),
 });

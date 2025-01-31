@@ -44,16 +44,12 @@ const User = () => {
 	}
 
 	return (
-		<div>
-			<h1>User</h1>
-			<button onClick={handleSubmit}>Get User</button>
-			{user && !loading && (
+		<div className="py-4 px-5 container mt-16 h-navbar">
+			<div className="bg-secondary-dark-6">
 				<div>
-					<p>Username: {user.username}</p>
-					<p>Email: {user.email}</p>
-					<p>Role: {user.role}</p>
+					<h1>{user.username}'s Profile</h1>
 				</div>
-			)}
+			</div>
 		</div>
 	);
 };
