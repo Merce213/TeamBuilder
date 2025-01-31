@@ -150,252 +150,175 @@ export const searchUsers = async (req: Request, res: Response) => {
 };
 
 // Favorite's Users Operations
-export const addFavoriteLanes = async (req: Request, res: Response) => {
+export const getFavoriteLanes = async (req: Request, res: Response) => {
+	const userId = req.params.userId;
+
+	const userFavoriteLanes = await prisma.userFavoriteLane.findMany({
+		where: { userId },
+	});
+
+	if (!userFavoriteLanes) {
+		res.status(404).json({
+			error: `Favorite lanes for ${userId} not found`,
+		});
+		return;
+	}
+
+	const favoriteLanes = userFavoriteLanes.map((lane) => ({
+		laneId: lane.id,
+		laneName: lane.lane,
+	}));
+
+	res.status(200).json({
+		favoriteLanes,
+	});
+};
+
+export const getFavoriteChampions = async (req: Request, res: Response) => {
+	const userId = req.params.userId;
+
+	const userFavoriteChampions = await prisma.userFavoriteChampion.findMany({
+		where: { userId },
+		select: {
+			championId: true,
+			champion: {
+				select: {
+					name: true,
+					nameId: true,
+				},
+			},
+		},
+	});
+
+	if (!userFavoriteChampions) {
+		res.status(404).json({
+			error: `Favorite champions for ${userId} not found`,
+		});
+		return;
+	}
+
+	const favoriteChampions = userFavoriteChampions.map((champion) => ({
+		championId: champion.championId,
+		championName: champion.champion.name,
+		championNameId: champion.champion.nameId,
+	}));
+
+	res.status(200).json({
+		favoriteChampions,
+	});
+};
+
+export const updateFavoriteLanes = async (req: Request, res: Response) => {
 	try {
 		const userId = req.params.userId;
+		const { lanes } = req.body;
 
-		const lanes = ((req.body.lanes as string[]) || [])
-			.map((lane) => lane.toLowerCase())
+		const validLanes = lanes
+			.map((lane: string) => lane.toLowerCase())
 			.filter(
-				(lane): lane is keyof typeof laneConsts => lane in laneConsts
+				(lane: string): lane is keyof typeof laneConsts =>
+					lane in laneConsts
 			)
-			.map((lane) => laneConsts[lane]);
-
-		if (!Array.isArray(lanes) || lanes.length === 0 || lanes.length > 2) {
-			res.status(400).json({
-				error: "You must choose between 1 and 2 valid lanes",
-			});
-			return;
-		}
+			.map((lane: keyof typeof laneConsts) => laneConsts[lane]);
 
 		const existingLanes = await prisma.userFavoriteLane.findMany({
 			where: { userId },
 			select: { lane: true },
 		});
-		const existingLaneNames = new Set(existingLanes.map((l) => l.lane));
-		const newLanes = lanes.filter((lane) => !existingLaneNames.has(lane));
-		const alreadyExistingLanes = lanes.filter((lane) =>
-			existingLaneNames.has(lane)
+
+		const existingLaneSet = new Set(existingLanes.map((l) => l.lane));
+		const newLaneSet = new Set(validLanes);
+
+		const lanesToRemove = [...existingLaneSet].filter(
+			(lane) => !newLaneSet.has(lane)
 		);
 
-		if (newLanes.length + existingLanes.length > 2) {
-			res.status(400).json({
-				error: "Cannot have more than 2 favorite lanes",
-			});
-			return;
-		}
-		if (newLanes.length === 0 && alreadyExistingLanes.length > 0) {
-			res.status(400).json({
-				error: {
-					message: "Lanes already added to favorites",
-					lanes: alreadyExistingLanes,
+		const lanesToAdd = validLanes.filter(
+			(lane: Lane) => !existingLaneSet.has(lane)
+		);
+
+		if (lanesToRemove.length > 0) {
+			await prisma.userFavoriteLane.deleteMany({
+				where: {
+					userId,
+					lane: {
+						in: lanesToRemove,
+					},
 				},
 			});
-			return;
 		}
-		if (newLanes.length === 0) {
-			res.status(400).json({
-				error: "None of the lanes are valid",
+
+		if (lanesToAdd.length > 0) {
+			await prisma.userFavoriteLane.createMany({
+				data: lanesToAdd.map((lane: any) => ({ userId, lane })),
 			});
-			return;
 		}
-
-		await prisma.userFavoriteLane.createMany({
-			data: newLanes.map((lane) => ({ userId, lane })),
-		});
-
-		res.status(201).json({
-			message: `Lane${newLanes.length > 1 ? "s" : ""} added successfully`,
-			added: newLanes,
-			alreadyExisting: alreadyExistingLanes,
-		});
-	} catch (error) {
-		console.error("Error in addFavoriteLanes route:", error);
-		res.status(500).json({ error: "Internal Server Error" });
-	}
-};
-
-export const removeFavoriteLanes = async (req: Request, res: Response) => {
-	try {
-		const userId = req.params.userId;
-		const lanes = (req.body.lanes as string[])
-			.map((l) => l.toLowerCase())
-			.filter((l): l is keyof typeof laneConsts => l in laneConsts)
-			.map((l) => laneConsts[l]);
-
-		if (!Array.isArray(lanes) || lanes.length === 0) {
-			res.status(400).json({
-				error: "You must choose at least one lane to remove",
-			});
-			return;
-		}
-
-		const existingLanes = await prisma.userFavoriteLane.findMany({
-			where: { userId },
-			select: { lane: true },
-		});
-		const existingLaneNames = new Set(existingLanes.map((l) => l.lane));
-
-		const lanesToRemove = lanes.filter((lane) =>
-			existingLaneNames.has(lane)
-		);
-		const invalidLanes = lanes.filter(
-			(lane) => !existingLaneNames.has(lane)
-		);
-
-		if (lanesToRemove.length === 0) {
-			res.status(400).json({
-				error: "None of the specified lanes are in your favorites",
-				invalidLanes,
-			});
-			return;
-		}
-
-		await prisma.userFavoriteLane.deleteMany({
-			where: { userId, lane: { in: lanesToRemove } },
-		});
 
 		res.status(200).json({
-			message: `Lane${lanes.length > 1 ? "s" : ""} removed successfully`,
+			message: "Favorite lanes updated successfully",
+			added: lanesToAdd,
 			removed: lanesToRemove,
-			invalidLanes,
 		});
 	} catch (error) {
-		console.error("Error in removeFavoriteLane route:", error);
+		console.error("Error in updateFavoriteLanes route:", error);
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 };
 
-export const addFavoriteChampions = async (req: Request, res: Response) => {
+export const updateFavoriteChampions = async (req: Request, res: Response) => {
 	try {
 		const userId = req.params.userId;
 		const { champions } = req.body;
 
-		if (
-			!Array.isArray(champions) ||
-			champions.length === 0 ||
-			champions.length > 5
-		) {
-			res.status(400).json({
-				error: "You must choose between 1 and 5 champions",
-			});
-			return;
-		}
-
-		const existingChampions = await prisma.userFavoriteChampion.findMany({
-			where: { userId },
-			include: { champion: { select: { name: true } } },
-		});
-		const existingChampionNames = new Set(
-			existingChampions.map((c) => c.champion.name)
-		);
-		const newChampions = champions.filter(
-			(name: string) => !existingChampionNames.has(name)
-		);
-		const alreadyExistingChampions = champions.filter((name: string) =>
-			existingChampionNames.has(name)
-		);
-
-		if (newChampions.length + existingChampions.length > 5) {
-			res.status(400).json({
-				error: "Cannot have more than 5 favorite champions",
-			});
-			return;
-		}
-
 		const validChampions = await prisma.champion.findMany({
-			where: { name: { in: newChampions } },
+			where: { name: { in: champions } },
 			select: { id: true, name: true },
 		});
 
-		if (
-			validChampions.length === 0 &&
-			alreadyExistingChampions.length > 0
-		) {
-			res.status(400).json({
-				error: {
-					message: "Champions already added to favorites",
-					champions: alreadyExistingChampions,
-				},
-			});
-			return;
-		}
-		if (validChampions.length === 0) {
-			res.status(400).json({
-				error: "None of the provided champions exist",
-			});
-			return;
-		}
-
-		await prisma.userFavoriteChampion.createMany({
-			data: validChampions.map((champion) => ({
-				userId,
-				championId: champion.id,
-			})),
-		});
-
-		res.status(201).json({
-			message: `Champion${
-				validChampions.length > 1 ? "s" : ""
-			} added successfully`,
-			added: validChampions.map((champion) => champion.name),
-			alreadyExisting: alreadyExistingChampions,
-		});
-	} catch (error) {
-		console.error("Error in addFavoriteChampions route:", error);
-		res.status(500).json({ error: "Internal Server Error" });
-	}
-};
-
-export const removeFavoriteChampions = async (req: Request, res: Response) => {
-	try {
-		const userId = req.params.userId;
-		const champions: string[] = req.body.champions || [];
-		if (champions.length === 0) {
-			res.status(400).json({
-				error: "You must choose at least one champion to remove",
-			});
-			return;
-		}
-
-		const existingChampions = await prisma.userFavoriteChampion.findMany({
+		const existingFavorites = await prisma.userFavoriteChampion.findMany({
 			where: { userId },
-			select: { champion: { select: { name: true } } },
+			include: { champion: { select: { id: true, name: true } } },
 		});
-		const existingChampionNames = new Set(
-			existingChampions.map((c) => c.champion.name)
+
+		const existingChampionSet = new Set(
+			existingFavorites.map((c) => c.champion.name)
 		);
-		const championsToRemove = champions.filter((name: string) =>
-			existingChampionNames.has(name)
+		const newChampionSet = new Set(validChampions.map((c) => c.name));
+
+		const championsToRemove = existingFavorites.filter(
+			(c) => !newChampionSet.has(c.champion.name)
 		);
-		const invalidChampions = champions.filter(
-			(name: string) => !existingChampionNames.has(name)
+		const championsToAdd = validChampions.filter(
+			(c) => !existingChampionSet.has(c.name)
 		);
 
-		if (championsToRemove.length === 0) {
-			res.status(400).json({
-				error: {
-					message:
-						"None of the provided champions are in your favorites",
-					invalidChampions,
+		if (championsToRemove.length > 0) {
+			await prisma.userFavoriteChampion.deleteMany({
+				where: {
+					userId,
+					championId: {
+						in: championsToRemove.map((c) => c.championId),
+					},
 				},
 			});
-			return;
 		}
 
-		await prisma.userFavoriteChampion.deleteMany({
-			where: { userId, champion: { name: { in: championsToRemove } } },
-		});
+		if (championsToAdd.length > 0) {
+			await prisma.userFavoriteChampion.createMany({
+				data: championsToAdd.map((champion) => ({
+					userId,
+					championId: champion.id,
+				})),
+			});
+		}
 
 		res.status(200).json({
-			message: `Champion${
-				championsToRemove.length > 1 ? "s" : ""
-			} removed successfully`,
-			removed: championsToRemove,
-			invalidChampions,
+			message: "Favorite champions updated successfully",
+			added: championsToAdd.map((c) => c.name),
+			removed: championsToRemove.map((c) => c.champion.name),
 		});
 	} catch (error) {
-		console.error("Error in removeFavoriteChampions route:", error);
+		console.error("Error in updateFavoriteChampions route:", error);
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 };

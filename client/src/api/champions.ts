@@ -1,8 +1,8 @@
 import keys from "../utils/keys";
 
-export const getChampions = async (queryParams: URLSearchParams) => {
+export const getChampions = async (queryParams?: URLSearchParams) => {
 	const url =
-		queryParams.size >= 1
+		queryParams && queryParams.size >= 1
 			? `${keys.API_URL}/champions?${queryParams}`
 			: `${keys.API_URL}/champions`;
 	const response = await fetch(url);

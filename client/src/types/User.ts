@@ -18,6 +18,7 @@ export interface User {
 	createdAt: string;
 	updatedAt: string;
 }
+
 export interface UserCreate {
 	username: string;
 	email: string;
