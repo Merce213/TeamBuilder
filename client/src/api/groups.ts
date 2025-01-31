@@ -1,5 +1,5 @@
 import { fetchWithRefreshAndRetry } from "../config/fetch";
-import { GroupCreate } from "../types/Group";
+import { GroupCreate, ResponseGroup } from "../types/Group";
 import keys from "../utils/keys";
 
 export const getGroups = async (userId: string) => {
@@ -15,13 +15,20 @@ export const getGroups = async (userId: string) => {
 	return await response.json();
 };
 
-export const getGroup = async (userId: string, groupId: string) => {
+export const getGroup = async (
+	userId: string,
+	groupId: string
+): Promise<ResponseGroup> => {
 	const response = await fetchWithRefreshAndRetry(
 		`${keys.API_URL}/users/${userId}/groups/${groupId}`
 	);
 	if (!response.ok) {
 		const errorData = await response.json();
-		throw new Error(errorData.error || "Failed to fetch group");
+		if (errorData.errors) {
+			throw errorData.errors;
+		} else {
+			throw new Error(errorData.error || "Failed to fetch group");
+		}
 	}
 
 	return await response.json();

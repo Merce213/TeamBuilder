@@ -1,6 +1,7 @@
 import { GroupRole, Prisma, UserRole } from "@prisma/client";
 import { Request, Response } from "express";
 import { prisma } from "../client";
+import keys from "../utils/keys";
 
 export const createGroup = async (req: Request, res: Response) => {
 	try {
@@ -69,9 +70,41 @@ export const getGroupById = async (req: Request, res: Response) => {
 				},
 			},
 			include: {
-				members: true,
+				members: {
+					select: {
+						id: true,
+						groupId: true,
+						userId: true,
+						role: true,
+						joinedAt: true,
+						updatedAt: true,
+						user: {
+							select: {
+								username: true,
+								email: true,
+							},
+						},
+					},
+				},
 			},
 		});
+
+		const summonerInfo = await prisma.summonerInfo.findUnique({
+			where: {
+				userId,
+			},
+			select: {
+				puuid: true,
+				gameName: true,
+				tagLine: true,
+			},
+		});
+
+		const summonerResponse = await fetch(
+			`https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/${summonerInfo?.puuid}?api_key=${keys.riotApiKey}`
+		);
+
+		const summonerData = await summonerResponse.json();
 
 		if (!group) {
 			res.status(404).json({
@@ -80,9 +113,25 @@ export const getGroupById = async (req: Request, res: Response) => {
 			return;
 		}
 
+		const groupData = {
+			...group,
+			members: group.members.map((member) => ({
+				...member,
+				username: member.user.username,
+				email: member.user.email,
+				avatar: summonerData.profileIconId
+					? `${keys.profileIconApi}/${summonerData.profileIconId}.png`
+					: undefined,
+				summonerName: summonerInfo
+					? `${summonerInfo.gameName}#${summonerInfo.tagLine}`
+					: undefined,
+				user: undefined,
+			})),
+		};
+
 		res.status(200).json({
 			message: "Group retrieved successfully",
-			group,
+			group: groupData,
 		});
 	} catch (error) {
 		console.error("Error retrieving group:", error);

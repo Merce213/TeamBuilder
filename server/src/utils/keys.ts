@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
+const versionRiotApi = "15.2.1";
 
 const keys = {
 	accessTokenSecret: process.env.JWT_SECRET || "",
@@ -10,6 +11,7 @@ const keys = {
 	resendApiKey: process.env.RESEND_API_KEY || "",
 	frontendUrl: process.env.FRONTEND_URL || "http://localhost:3000",
 	ddragonApiKey: process.env.DDRAGON_API_URL || "",
+	profileIconApi: `https://ddragon.leagueoflegends.com/cdn/${versionRiotApi}/img/profileicon`,
 };
 
 export default keys;

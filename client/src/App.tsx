@@ -16,6 +16,7 @@ import Privacy from "./pages/legal/Privacy";
 import Terms from "./pages/legal/Terms";
 import User from "./pages/users/User";
 import AccountSetting from "./pages/dashboard/settings/AccountSetting";
+import DashboardGroup from "./pages/dashboard/DashboardGroup";
 
 const App = () => {
 	const { user } = useAuth();
@@ -59,6 +60,7 @@ const App = () => {
 				</Route>
 
 				<Route element={<LayoutUser />}>
+					{/* DASHBOARD */}
 					<Route
 						path="/dashboard"
 						element={
@@ -67,7 +69,16 @@ const App = () => {
 							</ProtectedRoute>
 						}
 					/>
+					<Route
+						path="/dashboard/group"
+						element={
+							<ProtectedRoute isAllowed={!!user}>
+								<DashboardGroup />
+							</ProtectedRoute>
+						}
+					/>
 
+					{/* SETTINGS */}
 					<Route
 						path="/dashboard/settings"
 						element={

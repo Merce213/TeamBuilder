@@ -11,7 +11,7 @@ export interface Group {
 	description: string | null;
 	createdAt: Date;
 	updatedAt: Date;
-	members: GroupMembership[];
+	members: GroupMembershipExtraInfo[];
 }
 
 export interface GroupCreate {
@@ -24,7 +24,19 @@ export interface GroupMembership {
 	id: string;
 	groupId: string;
 	userId: string;
-	role: string;
+	role: GroupRole;
 	joinedAt: Date;
 	updatedAt: Date;
+}
+
+export interface GroupMembershipExtraInfo extends GroupMembership {
+	avatar?: string;
+	username?: string;
+	email?: string;
+	summonerName?: string;
+}
+
+export interface ResponseGroup {
+	message: string;
+	group: Group;
 }
