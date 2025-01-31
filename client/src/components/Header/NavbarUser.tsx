@@ -18,7 +18,7 @@ const NavbarUser = () => {
 					<div className="flex items-center justify-start gap-3">
 						<button
 							type="button"
-							className="items-center p-1 text-sm rounded-lg s-sm:hidden btn-accent-outline"
+							className="items-center p-1 text-sm rounded-lg s-md:hidden btn-accent-outline"
 							onClick={handleOpenSidebar}
 							aria-expanded={isSidebarOpen}
 							aria-controls="sidebar"

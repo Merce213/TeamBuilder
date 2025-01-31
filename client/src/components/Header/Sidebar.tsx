@@ -59,7 +59,7 @@ const Sidebar = () => {
 				className={`fixed top-0 left-0 z-40 border-r border-gray-light-3 w-64 h-screen transition-all bg-gray ${
 					isSidebarOpen
 						? "translate-x-0"
-						: "s-sm:translate-x-0 -translate-x-full"
+						: "s-md:translate-x-0 -translate-x-full"
 				}`}
 			>
 				<div className="h-full flex flex-col justify-between">

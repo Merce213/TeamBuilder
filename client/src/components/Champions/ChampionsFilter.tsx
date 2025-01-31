@@ -44,12 +44,26 @@ const ChampionsFilter = () => {
 		setSearchQuery("");
 	};
 
+	const handleResetFilters = () => {
+		setSearchQuery("");
+		setFilters({ name: "", tag: [], lane: [] });
+	};
+
 	return (
 		<div
 			aria-label="champions-filters"
 			className="filters p-4 rounded-lg shadow-lg"
 		>
-			<h2 className="mb-4 text-lg font-bold">Filters</h2>
+			<div className="flex gap-4 items-center mb-6">
+				<h2 className="text-lg font-bold">Filters</h2>
+				<button
+					onClick={handleResetFilters}
+					className="bg-accent shadow-lg cursor-pointer px-4 py-2 text-sm text-text rounded-full"
+					aria-label="reset-filters"
+				>
+					Reset Filters
+				</button>
+			</div>
 
 			<div className="flex flex-col flex-wrap gap-4">
 				<div className="flex flex-col gap-2 relative">
