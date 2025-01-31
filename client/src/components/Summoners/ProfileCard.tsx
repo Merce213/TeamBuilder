@@ -72,45 +72,26 @@ const ProfileCard = ({ editBtn = false }: { editBtn?: boolean }) => {
 	const [openModalEditSummonerProfile, setOpenModalEditSummonerProfile] =
 		useState(false);
 
-	const {
-		data: dataSummoner,
-		isLoading: isLoadingSummoner,
-		isError: isErrorSummoner,
-		error: errorSummoner,
-	} = useQuery({
+	const { data: dataSummoner } = useQuery({
 		queryKey: ["summoner", user?.id],
 		queryFn: async () => getSummonerProfile(user?.id as string),
 		staleTime: 1000 * 60 * 5,
 		retry: false,
 	});
 
-	const {
-		data: dataFavoriteLanes,
-		isLoading: isLoadingFavoriteLanes,
-		isError: isErrorFavoriteLanes,
-		error: errorFavoriteLanes,
-	} = useQuery({
+	const { data: dataFavoriteLanes } = useQuery({
 		queryKey: ["favoriteLanes", user?.id],
 		queryFn: async () => getFavoriteLanes(user?.id as string),
 		staleTime: 1000 * 60 * 5,
 		retry: false,
 	});
 
-	const {
-		data: dataFavoriteChampions,
-		isLoading: isLoadingFavoriteChampions,
-		isError: isErrorFavoriteChampions,
-		error: errorFavoriteChampions,
-	} = useQuery({
+	const { data: dataFavoriteChampions } = useQuery({
 		queryKey: ["favoriteChampions", user?.id],
 		queryFn: async () => getFavoriteChampions(user?.id as string),
 		staleTime: 1000 * 60 * 5,
 		retry: false,
 	});
-
-	console.log("dataSummoner", dataSummoner);
-	console.log("dataFavoriteLanes", dataFavoriteLanes);
-	console.log("dataFavoriteChampions", dataFavoriteChampions);
 
 	return (
 		<>
