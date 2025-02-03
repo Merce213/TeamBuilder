@@ -1,13 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+	createContext,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 import { getGroups } from "../api/groups";
 import { Group } from "../types/Group";
 import { ReactSetState } from "../types/ReactTypes";
 import { useAuth } from "./AuthContext";
 
 const GroupContext = createContext<{
-	groupData: Group | null;
-	setGroupData: ReactSetState<Group | null>;
+	groupData: Group | null | undefined;
+	setGroupData: ReactSetState<Group | null | undefined>;
 	groups: Group[];
 	isLoadingGroups: boolean;
 	groupsError: Error | null;
@@ -16,9 +22,11 @@ const GroupContext = createContext<{
 } | null>(null);
 
 export const GroupProvider = ({ children }: { children: React.ReactNode }) => {
-	const [groupData, setGroupData] = useState<Group | null>(null);
+	const [groupData, setGroupData] = useState<Group | null | undefined>(
+		undefined
+	);
 	const { user } = useAuth();
-	const selectedGroupId = localStorage.getItem("selectedGroup");
+	const selectedGroupId = localStorage.getItem("selectedGroup") ?? null;
 
 	const {
 		data,
@@ -30,18 +38,23 @@ export const GroupProvider = ({ children }: { children: React.ReactNode }) => {
 		enabled: !!user,
 	});
 
-	const groups = data?.groups ?? [];
+	const groups = useMemo(() => data?.groups ?? [], [data]);
 
 	useEffect(() => {
-		if (user && user.id && selectedGroupId) {
-			const selectedGroup = groups.find(
-				(group: Group) => group.id === selectedGroupId
-			);
+		if (!isLoadingGroups && user && groups.length > 0) {
+			const selectedGroup = selectedGroupId
+				? groups.find((group: Group) => group.id === selectedGroupId)
+				: groups[0];
+
 			if (selectedGroup) {
+				localStorage.setItem("selectedGroup", selectedGroup.id);
 				setGroupData(selectedGroup);
+			} else {
+				localStorage.removeItem("selectedGroup");
+				setGroupData(null);
 			}
 		}
-	}, [user, groups]);
+	}, [selectedGroupId, groups, isLoadingGroups, user]);
 
 	const handleSelectGroup = (group: Group) => {
 		localStorage.setItem("selectedGroup", group.id);

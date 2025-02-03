@@ -9,7 +9,8 @@ const keys = {
 	invitationTokenSecret: process.env.JWT_INVITATION_SECRET || "",
 	riotApiKey: process.env.RIOT_API_KEY || "",
 	resendApiKey: process.env.RESEND_API_KEY || "",
-	frontendUrl: process.env.FRONTEND_URL || "http://localhost:3000",
+	frontendUrl: process.env.FRONTEND_URL || "http://localhost:5173",
+	backendUrl: process.env.BACKEND_URL || "http://localhost:3001",
 	ddragonApiKey: process.env.DDRAGON_API_URL || "",
 	profileIconApi: `https://ddragon.leagueoflegends.com/cdn/${versionRiotApi}/img/profileicon`,
 };

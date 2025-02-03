@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 import { createGroup } from "../../api/groups";
 import { useAuth } from "../../contexts/AuthContext";
-import { GroupCreate, GroupRole } from "../../types/Group";
+import { GroupBody } from "../../types/Group";
 import { ReactSetState } from "../../types/ReactTypes";
 import Modal from "../Modal";
 
@@ -19,10 +19,9 @@ const CreateGroupModal = ({
 	const { user } = useAuth();
 	const queryClient = useQueryClient();
 
-	const [createGroupData, setCreateGroupData] = useState<GroupCreate>({
+	const [createGroupData, setCreateGroupData] = useState<GroupBody>({
 		name: "",
 		description: "",
-		members: [],
 	});
 	const [errors, setErrors] = useState<Record<string, string>>({});
 	const [errorMessage, setErrorMessage] = useState<string>("");
@@ -46,10 +45,11 @@ const CreateGroupModal = ({
 	};
 
 	const { mutate } = useMutation({
-		mutationFn: async (data: GroupCreate) =>
+		mutationFn: async (data: GroupBody) =>
 			createGroup(user?.id ?? "", data),
 		onSuccess: async () => {
 			queryClient.invalidateQueries({ queryKey: ["groups", user?.id] });
+			setOpenModalCreateGroup(false);
 		},
 		onError: (error) => {
 			if (error instanceof Error) {
@@ -73,17 +73,9 @@ const CreateGroupModal = ({
 			return;
 		}
 
-		const groupMembers = [
-			...(createGroupData.members || []).map((member) => ({
-				userId: member.userId,
-				role: GroupRole.MEMBER,
-			})),
-		];
-
-		const newGroup: GroupCreate = {
+		const newGroup: GroupBody = {
 			name: createGroupData.name,
 			description: createGroupData.description,
-			members: groupMembers,
 		};
 
 		mutate(newGroup);
@@ -95,7 +87,6 @@ const CreateGroupModal = ({
 		setCreateGroupData({
 			name: "",
 			description: "",
-			members: [],
 		});
 		setOpenModalCreateGroup(false);
 	};

@@ -1,8 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { checkAuth } from "../api/auth";
-import { getGroups } from "../api/groups";
 import logo from "../assets/Teambuilder.png";
-import { Group } from "../types/Group";
 import { ReactSetState } from "../types/ReactTypes";
 import { UserStorage } from "../types/User";
 
@@ -32,44 +30,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 			const data = await response.json();
 			setUser(data);
-			fetchGroups(data.id);
 		} catch (error) {
 			console.error("Error fetching user:", error);
 			setUser(null);
 			setLoading(false);
 		} finally {
 			setLoading(false);
-		}
-	};
-
-	const fetchGroups = async (userId: string): Promise<void> => {
-		const selectedGroupId = window.localStorage.getItem("selectedGroup");
-
-		if (selectedGroupId) {
-			return;
-		}
-
-		try {
-			const data = await getGroups(userId);
-			const groups = data.groups;
-
-			if (groups.length === 0) {
-				return;
-			}
-
-			const groupId = groups[0].id;
-			if (!groupId) {
-				throw new Error("Group ID not found");
-			}
-
-			if (
-				!selectedGroupId ||
-				!groups.some((group: Group) => group.id === selectedGroupId)
-			) {
-				window.localStorage.setItem("selectedGroup", groupId);
-			}
-		} catch (error) {
-			console.error("Error fetching groups:", error);
 		}
 	};
 

@@ -37,13 +37,13 @@ export const UpdateGroupSchema = z.object({
 			.trim()
 			.optional(),
 		description: z.string().trim().nullable().optional(),
-		members: z.array(z.string().uuid("Invalid user ID format")).optional(),
 	}),
 });
 
-export const DeleteGroupeSchema = z.object({
+export const ParamsGroupSchema = z.object({
 	params: z.object({
 		userId: z.string().uuid("Invalid user ID format"),
 		groupId: z.string().uuid("Invalid group ID format"),
+		memberId: z.string().uuid("Invalid user ID format").optional(),
 	}),
 });
