@@ -22,7 +22,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 			const response = await checkAuth();
 
 			if (!response.ok) {
-				const errorData = await response.json();
 				setUser(null);
 				setLoading(false);
 				return;
