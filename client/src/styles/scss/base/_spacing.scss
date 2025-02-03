@@ -1,0 +1,135 @@
+@each $key, $value in $spacing {
+	.p-#{$key} {
+		padding: #{$value};
+	}
+	.pt-#{$key} {
+		padding-top: #{$value} !important;
+	}
+	.pr-#{$key} {
+		padding-right: #{$value} !important;
+	}
+	.pb-#{$key} {
+		padding-bottom: #{$value} !important;
+	}
+	.pl-#{$key} {
+		padding-left: #{$value} !important;
+	}
+	.px-#{$key} {
+		padding-left: #{$value} !important;
+		padding-right: #{$value} !important;
+	}
+	.py-#{$key} {
+		padding-top: #{$value} !important;
+		padding-bottom: #{$value} !important;
+	}
+	.ps-#{$key} {
+		padding-inline-start: #{$value};
+	}
+	.m-#{$key} {
+		margin: #{$value};
+	}
+	.mt-#{$key} {
+		margin-top: #{$value} !important;
+	}
+	.mr-#{$key} {
+		margin-right: #{$value} !important;
+	}
+	.mb-#{$key} {
+		margin-bottom: #{$value} !important;
+	}
+	.ml-#{$key} {
+		margin-left: #{$value} !important;
+	}
+	.mx-#{$key} {
+		margin-left: #{$value} !important;
+		margin-right: #{$value} !important;
+	}
+	.my-#{$key} {
+		margin-top: #{$value} !important;
+		margin-bottom: #{$value} !important;
+	}
+	.ms-#{$key} {
+		margin-inline-start: #{$value};
+	}
+	.gap-#{$key} {
+		gap: #{$value};
+	}
+	.gap-x-#{$key} {
+		column-gap: #{$value};
+	}
+	.gap-y-#{$key} {
+		row-gap: #{$value};
+	}
+	.space-x-#{$key} > * + * {
+		margin-left: #{$value};
+	}
+	.space-y-#{$key} > * + * {
+		margin-top: #{$value};
+	}
+
+	@each $breakpoint, $breakpoint-value in $breakpoints {
+		@include responsive($breakpoint) {
+			.s-#{$breakpoint}\:p-#{$key} {
+				padding: #{$value} !important;
+			}
+			.s-#{$breakpoint}\:pt-#{$key} {
+				padding-top: #{$value} !important;
+			}
+			.s-#{$breakpoint}\:pr-#{$key} {
+				padding-right: #{$value} !important;
+			}
+			.s-#{$breakpoint}\:pb-#{$key} {
+				padding-bottom: #{$value} !important;
+			}
+			.s-#{$breakpoint}\:pl-#{$key} {
+				padding-left: #{$value} !important;
+			}
+			.s-#{$breakpoint}\:px-#{$key} {
+				padding-left: #{$value} !important;
+				padding-right: #{$value} !important;
+			}
+			.s-#{$breakpoint}\:py-#{$key} {
+				padding-top: #{$value} !important;
+				padding-bottom: #{$value} !important;
+			}
+			.s-#{$breakpoint}\:m-#{$key} {
+				margin: #{$value} !important;
+			}
+			.s-#{$breakpoint}\:mt-#{$key} {
+				margin-top: #{$value} !important;
+			}
+			.s-#{$breakpoint}\:mr-#{$key} {
+				margin-right: #{$value} !important;
+			}
+			.s-#{$breakpoint}\:mb-#{$key} {
+				margin-bottom: #{$value} !important;
+			}
+			.s-#{$breakpoint}\:ml-#{$key} {
+				margin-left: #{$value} !important;
+			}
+			.s-#{$breakpoint}\:mx-#{$key} {
+				margin-left: #{$value} !important;
+				margin-right: #{$value} !important;
+			}
+			.s-#{$breakpoint}\:my-#{$key} {
+				margin-top: #{$value} !important;
+				margin-bottom: #{$value} !important;
+			}
+			.s-#{$breakpoint}\:gap-#{$key} {
+				gap: #{$value} !important;
+			}
+			.s-#{$breakpoint}\:gap-x-#{$key} {
+				column-gap: #{$value} !important;
+			}
+			.s-#{$breakpoint}\:gap-y-#{$key} {
+				row-gap: #{$value} !important;
+			}
+			.s-#{$breakpoint}\:space-x-#{$key} > * + * {
+				margin-left: #{$value} !important;
+			}
+			.s-#{$breakpoint}\:space-y-#{$key} > * + * {
+				margin-top: #{$value} !important;
+			}
+		}
+	}
+}

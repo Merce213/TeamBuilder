@@ -1,0 +1,129 @@
+@use "sass:color";
+
+.bg-transparent {
+	background-color: transparent !important;
+}
+
+.text-transparent {
+	color: transparent !important;
+}
+
+@each $key, $val in $colors {
+	.text-#{$key} {
+		color: $val !important;
+	}
+
+	.hover\:text-#{$key} {
+		&:hover {
+			color: $val !important;
+		}
+	}
+
+	.bg-#{$key} {
+		background-color: $val !important;
+	}
+
+	.hover\:bg-#{$key} {
+		&:hover {
+			background-color: $val !important;
+		}
+	}
+
+	.border-#{$key} {
+		border-color: $val !important;
+	}
+
+	.hover\:border-#{$key} {
+		&:hover {
+			border-color: $val !important;
+		}
+	}
+
+	.divide-#{$key} > * + * {
+		border-color: $val !important;
+	}
+
+	@if ($val != black and $val != white) {
+		// color light
+		@for $i from 1 through 9 {
+			.text-#{$key}-light-#{$i} {
+				color: color.mix(white, $val, $i * 10%) !important;
+			}
+
+			.hover\:text-#{$key}-light-#{$i} {
+				&:hover {
+					color: color.mix(white, $val, $i * 10%) !important;
+				}
+			}
+
+			.bg-#{$key}-light-#{$i} {
+				background-color: color.mix(white, $val, $i * 10%) !important;
+			}
+
+			.hover\:bg-#{$key}-light-#{$i} {
+				&:hover {
+					background-color: color.mix(
+						white,
+						$val,
+						$i * 10%
+					) !important;
+				}
+			}
+
+			.border-#{$key}-light-#{$i} {
+				border-color: color.mix(white, $val, $i * 10%) !important;
+			}
+
+			.hover\:border-#{$key} {
+				&:hover {
+					border-color: $val !important;
+				}
+			}
+
+			.divide-#{$key} > * + * {
+				border-color: $val !important;
+			}
+		}
+
+		// color dark
+		@for $i from 1 through 9 {
+			.text-#{$key}-dark-#{$i} {
+				color: color.mix(black, $val, $i * 10%) !important;
+			}
+
+			.hover\:text-#{$key}-dark-#{$i} {
+				&:hover {
+					color: color.mix(black, $val, $i * 10%) !important;
+				}
+			}
+
+			.bg-#{$key}-dark-#{$i} {
+				background-color: color.mix(black, $val, $i * 10%) !important;
+			}
+
+			.hover\:bg-#{$key}-dark-#{$i} {
+				&:hover {
+					background-color: color.mix(
+						black,
+						$val,
+						$i * 10%
+					) !important;
+				}
+			}
+
+			.border-#{$key}-dark-#{$i} {
+				border-color: color.mix(black, $val, $i * 10%) !important;
+			}
+
+			.hover\:border-#{$key} {
+				&:hover {
+					border-color: $val !important;
+				}
+			}
+
+			.divide-#{$key} > * + * {
+				border-color: $val !important;
+			}
+		}
+	}
+}

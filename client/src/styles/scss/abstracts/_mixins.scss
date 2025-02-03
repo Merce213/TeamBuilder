@@ -1,0 +1,38 @@
+@use "sass:map";
+@use "sass:color";
+
+@mixin responsive($breakpoint) {
+	@media (min-width: map.get($breakpoints, $breakpoint)) {
+		@content;
+	}
+}
+
+@mixin button($background, $color: #fff, $hover-bg: null, $hover-color: null) {
+	display: inline-block;
+	padding: map.get($spacing, sm) map.get($spacing, md);
+	border: none;
+	border-radius: 0.375rem;
+	background-color: $background;
+	color: $color;
+	font-weight: map.get($font-weights, "semibold");
+	text-align: center;
+	text-decoration: none;
+	cursor: pointer;
+	transition: all 0.3s ease-in-out;
+
+	&:hover {
+		background-color: if(
+			$hover-bg != null,
+			$hover-bg,
+			color.scale($background, $blackness: 10%)
+		);
+		color: if($hover-color != null, $hover-color, $color);
+	}
+
+	&:disabled {
+		background-color: color.scale($background, $lightness: 20%);
+		color: color.scale($color, $blackness: 20%);
+		cursor: not-allowed;
+		opacity: 0.6;
+	}
+}

@@ -1,0 +1,274 @@
+@each $key, $value in $sizes {
+	.w-#{$key} {
+		width: #{$value};
+	}
+
+	.min-w-#{$key} {
+		min-width: #{$value};
+	}
+
+	.max-w-#{$key} {
+		max-width: #{$value};
+	}
+
+	.h-#{$key} {
+		height: #{$value};
+	}
+
+	.min-h-#{$key} {
+		min-height: #{$value};
+	}
+
+	.max-h-#{$key} {
+		max-height: #{$value};
+	}
+
+	@each $breakpoint, $breakpoint-value in $breakpoints {
+		@include responsive($breakpoint) {
+			.s-#{$breakpoint}\:w-#{$key} {
+				width: #{$value} !important;
+			}
+
+			.s-#{$breakpoint}\:min-w-#{$key} {
+				min-width: #{$value} !important;
+			}
+
+			.s-#{$breakpoint}\:max-w-#{$key} {
+				max-width: #{$value} !important;
+			}
+
+			.s-#{$breakpoint}\:h-#{$key} {
+				height: #{$value} !important;
+			}
+
+			.s-#{$breakpoint}\:min-h-#{$key} {
+				min-height: #{$value} !important;
+			}
+
+			.s-#{$breakpoint}\:max-h-#{$key} {
+				max-height: #{$value} !important;
+			}
+		}
+	}
+}
+
+.w {
+	&-screen {
+		width: 100vw;
+	}
+	&-svw {
+		width: 100svw;
+	}
+	&-dvw {
+		width: 100dvw;
+	}
+	&-min {
+		width: min-content;
+	}
+	&-max {
+		width: max-content;
+	}
+	&-fit {
+		width: fit-content;
+	}
+}
+
+.min {
+	&-w-min {
+		min-width: min-content;
+	}
+	&-w-max {
+		min-width: max-content;
+	}
+	&-w-fit {
+		min-width: fit-content;
+	}
+}
+
+@each $key, $value in $max-widths {
+	.max-w-#{$key} {
+		max-width: #{$value};
+	}
+
+	@each $breakpoint, $breakpoint-value in $breakpoints {
+		@include responsive($breakpoint) {
+			.s-#{$breakpoint}\:max-w-#{$key} {
+				max-width: #{$value} !important;
+			}
+		}
+	}
+}
+
+@each $breakpoint, $breakpoint-value in $breakpoints {
+	@include responsive($breakpoint) {
+		.s-#{$breakpoint}\:w-screen {
+			width: 100vw !important;
+		}
+		.s-#{$breakpoint}\:w-svw {
+			width: 100svw !important;
+		}
+		.s-#{$breakpoint}\:w-dvw {
+			width: 100dvw !important;
+		}
+		.s-#{$breakpoint}\:w-min {
+			width: min-content !important;
+		}
+		.s-#{$breakpoint}\:w-max {
+			width: max-content !important;
+		}
+		.s-#{$breakpoint}\:w-fit {
+			width: fit-content !important;
+		}
+		.s-#{$breakpoint}\:min-w-min {
+			min-width: min-content !important;
+		}
+		.s-#{$breakpoint}\:min-w-max {
+			min-width: max-content !important;
+		}
+		.s-#{$breakpoint}\:min-w-fit {
+			min-width: fit-content !important;
+		}
+	}
+}
+
+.h {
+	&-screen {
+		height: 100vh;
+	}
+	&-svh {
+		height: 100svh;
+	}
+	&-dvh {
+		height: 100dvh;
+	}
+	&-min {
+		height: min-content;
+	}
+	&-max {
+		height: max-content;
+	}
+	&-fit {
+		height: fit-content;
+	}
+	&-screen-navbar {
+		height: calc(100vh - 64px);
+	}
+	&-navbar {
+		height: calc(100vh - 173px);
+	}
+}
+
+.min {
+	&-h-screen {
+		min-height: 100vh;
+	}
+	&-h-svh {
+		min-height: 100svh;
+	}
+	&-h-dvh {
+		min-height: 100dvh;
+	}
+	&-h-min {
+		min-height: min-content;
+	}
+	&-h-max {
+		min-height: max-content;
+	}
+	&-h-fit {
+		min-height: fit-content;
+	}
+	&-h-bg {
+		min-height: calc(100vh - 64px);
+
+		@include responsive("sm") {
+			min-height: 44rem;
+		}
+	}
+	&-h-navbar {
+		min-height: calc(100vh - 90px);
+	}
+}
+
+.max {
+	&-h-screen {
+		max-height: 100vh;
+	}
+	&-h-svh {
+		max-height: 100svh;
+	}
+	&-h-dvh {
+		max-height: 100dvh;
+	}
+	&-h-min {
+		max-height: min-content;
+	}
+	&-h-max {
+		max-height: max-content;
+	}
+	&-h-fit {
+		max-height: fit-content;
+	}
+}
+
+@each $breakpoint, $breakpoint-value in $breakpoints {
+	@include responsive($breakpoint) {
+		.s-#{$breakpoint}\:h-screen {
+			height: 100vh !important;
+		}
+		.s-#{$breakpoint}\:h-svh {
+			height: 100svh !important;
+		}
+		.s-#{$breakpoint}\:h-dvh {
+			height: 100dvh !important;
+		}
+		.s-#{$breakpoint}\:h-min {
+			height: min-content !important;
+		}
+		.s-#{$breakpoint}\:h-max {
+			height: max-content !important;
+		}
+		.s-#{$breakpoint}\:h-fit {
+			height: fit-content !important;
+		}
+		.s-#{$breakpoint}\:min-h-screen {
+			min-height: 100vh !important;
+		}
+		.s-#{$breakpoint}\:min-h-svh {
+			min-height: 100svh !important;
+		}
+		.s-#{$breakpoint}\:min-h-dvh {
+			min-height: 100dvh !important;
+		}
+		.s-#{$breakpoint}\:min-h-min {
+			min-height: min-content !important;
+		}
+		.s-#{$breakpoint}\:min-h-max {
+			min-height: max-content !important;
+		}
+		.s-#{$breakpoint}\:min-h-fit {
+			min-height: fit-content !important;
+		}
+		.s-#{$breakpoint}\:max-h-screen {
+			max-height: 100vh !important;
+		}
+		.s-#{$breakpoint}\:max-h-svh {
+			max-height: 100svh !important;
+		}
+		.s-#{$breakpoint}\:max-h-dvh {
+			max-height: 100dvh !important;
+		}
+		.s-#{$breakpoint}\:max-h-min {
+			max-height: min-content !important;
+		}
+		.s-#{$breakpoint}\:max-h-max {
+			max-height: max-content !important;
+		}
+		.s-#{$breakpoint}\:max-h-fit {
+			max-height: fit-content !important;
+		}
+	}
+}
+
+.resize-none {
+	resize: none;
+}

@@ -1,0 +1,65 @@
+.wrapper {
+	overflow: hidden;
+	height: 28rem;
+
+	@include responsive("md") {
+		display: grid;
+		grid-template-columns: 1fr 5fr;
+		grid-template-rows: auto;
+		grid-gap: 10px;
+		height: 44rem;
+	}
+
+	.gallery {
+		overflow-y: hidden;
+		overflow-x: scroll;
+		scroll-snap-type: x mandatory;
+		scroll-behavior: smooth;
+		display: flex;
+		padding-bottom: 5px;
+		height: 100%;
+
+		@include responsive("md") {
+			overflow-y: scroll;
+			overflow-x: hidden;
+			display: block;
+			scroll-snap-type: y mandatory;
+			padding-right: 5px;
+			padding-bottom: 0;
+		}
+
+		&_img {
+			scroll-snap-align: start;
+			object-fit: cover;
+			margin-bottom: 10px;
+		}
+	}
+
+	.lil-nav {
+		overflow-y: hidden;
+		overflow-x: scroll;
+		scroll-snap-type: y mandatory;
+		scroll-behavior: smooth;
+		grid-row-start: 2;
+		display: none;
+
+		@include responsive("md") {
+			grid-row-start: auto;
+			display: block;
+			overflow-y: scroll;
+			overflow-x: hidden;
+			padding-right: 5px;
+		}
+
+		a {
+			display: flex;
+			height: 200px;
+			scroll-snap-align: start;
+			margin-bottom: 10px;
+		}
+
+		&_img {
+			object-fit: cover;
+		}
+	}
+}
