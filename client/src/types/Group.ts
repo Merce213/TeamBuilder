@@ -14,10 +14,9 @@ export interface Group {
 	members: GroupMembershipExtraInfo[];
 }
 
-export interface GroupCreate {
+export interface GroupBody {
 	name: string;
 	description: string | null;
-	members?: { userId: string }[];
 }
 
 export interface GroupMembership {

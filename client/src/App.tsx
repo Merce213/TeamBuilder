@@ -17,6 +17,7 @@ import Terms from "./pages/legal/Terms";
 import User from "./pages/users/User";
 import AccountSetting from "./pages/dashboard/settings/AccountSetting";
 import DashboardGroup from "./pages/dashboard/DashboardGroup";
+import JoinGroup from "./pages/JoinGroup";
 
 const App = () => {
 	const { user } = useAuth();
@@ -34,7 +35,7 @@ const App = () => {
 						element={
 							<ProtectedRoute
 								isAllowed={!user}
-								redirectPath="/dashboard/profile"
+								redirectPath="/dashboard"
 							>
 								<SignIn />
 							</ProtectedRoute>
@@ -45,7 +46,7 @@ const App = () => {
 						element={
 							<ProtectedRoute
 								isAllowed={!user}
-								redirectPath="/dashboard/profile"
+								redirectPath="/dashboard"
 							>
 								<SignUp />
 							</ProtectedRoute>
@@ -60,6 +61,16 @@ const App = () => {
 				</Route>
 
 				<Route element={<LayoutUser />}>
+					{/* JOIN GROUP */}
+					<Route
+						path="/join-group/:groupId"
+						element={
+							<ProtectedRoute isAllowed={!!user}>
+								<JoinGroup />
+							</ProtectedRoute>
+						}
+					/>
+
 					{/* DASHBOARD */}
 					<Route
 						path="/dashboard"

@@ -6,6 +6,7 @@ import championRoutes from "./routes/champion.route";
 import userRoutes from "./routes/user.route";
 import groupRoutes from "./routes/group.route";
 import summonerRoutes from "./routes/summoner.route";
+import invitationRoutes from "./routes/invitation.route";
 
 const app: Application = express();
 
@@ -26,5 +27,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/champions", championRoutes);
 app.use("/api/users", userRoutes, groupRoutes);
 app.use("/api/summoners", summonerRoutes);
+app.use("/api/invitations", invitationRoutes);
 
 export default app;

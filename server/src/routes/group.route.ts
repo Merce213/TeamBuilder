@@ -4,6 +4,8 @@ import {
 	deleteGroup,
 	getGroupById,
 	getUserGroups,
+	kickMemberFromGroup,
+	leaveGroup,
 	updateGroup,
 } from "../controllers/group.controller";
 import { authenticate } from "../middlewares/authentication.middleware";
@@ -14,9 +16,9 @@ import {
 import { validateData } from "../middlewares/validation.middleware";
 import {
 	CreateGroupSchema,
-	DeleteGroupeSchema,
 	GetGroupSchema,
 	GetUserGroupsSchema,
+	ParamsGroupSchema,
 	UpdateGroupSchema,
 } from "../schemas/group.schema";
 
@@ -37,15 +39,25 @@ router.get(
 	[authenticate, validateData(GetGroupSchema)],
 	getGroupById
 );
-router.patch(
+router.put(
 	"/:userId/groups/:groupId",
 	[authenticate, validateData(UpdateGroupSchema), checkGroupAccess()],
 	updateGroup
 );
 router.delete(
 	"/:userId/groups/:groupId",
-	[authenticate, validateData(DeleteGroupeSchema), checkGroupAccess()],
+	[authenticate, validateData(ParamsGroupSchema), checkGroupAccess()],
 	deleteGroup
+);
+router.delete(
+	"/:userId/groups/:groupId/members/:memberId",
+	[authenticate, validateData(ParamsGroupSchema), checkGroupAccess()],
+	kickMemberFromGroup
+);
+router.delete(
+	"/:userId/groups/:groupId/leave",
+	[authenticate, validateData(ParamsGroupSchema), checkGroupAccess()],
+	leaveGroup
 );
 
 export default router;

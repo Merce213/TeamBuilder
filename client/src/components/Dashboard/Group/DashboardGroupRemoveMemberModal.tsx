@@ -1,3 +1,7 @@
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { kickMemberFromGroup } from "../../../api/groups";
+import { useAuth } from "../../../contexts/AuthContext";
 import { GroupMembershipExtraInfo } from "../../../types/Group";
 import { ReactSetState } from "../../../types/ReactTypes";
 import Modal from "../../Modal";
@@ -11,6 +15,40 @@ const DashboardGroupRemoveMemberModal = ({
 	setOpenModalRemoveMemberGroup: ReactSetState<boolean>;
 	selectedMember: GroupMembershipExtraInfo | null;
 }) => {
+	const { user } = useAuth();
+
+	const removeMemberFromGroupMutation = useMutation({
+		mutationFn: async () => {
+			if (selectedMember && user) {
+				return kickMemberFromGroup(
+					user.id,
+					selectedMember.groupId,
+					selectedMember.userId
+				);
+			}
+			throw new Error("Selected member or user is null");
+		},
+		onSuccess: () => {
+			setOpenModalRemoveMemberGroup(false);
+		},
+		onError: (error) => {
+			if (error instanceof Error) {
+				toast.error(`Failed to remove member: ${error.message}`, {
+					style: {
+						padding: "16px",
+					},
+				});
+				return;
+			}
+			return;
+		},
+	});
+
+	const handleRemoveMember = () => {
+		removeMemberFromGroupMutation.mutate();
+		setOpenModalRemoveMemberGroup(false);
+	};
+
 	return (
 		<Modal
 			isOpen={openModalRemoveMemberGroup}
@@ -34,10 +72,7 @@ const DashboardGroupRemoveMemberModal = ({
 					</button>
 					<button
 						className="btn-danger p-2"
-						onClick={() => {
-							//TODO: implement remove member from group
-							setOpenModalRemoveMemberGroup(false);
-						}}
+						onClick={() => handleRemoveMember()}
 					>
 						Remove
 					</button>

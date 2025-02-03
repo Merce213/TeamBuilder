@@ -1,10 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { CirclePlus, Pencil } from "lucide-react";
+import { CirclePlus, LogOut, Pencil, Trash } from "lucide-react";
 import { useState } from "react";
 import { getGroup } from "../../api/groups";
 import CoreContainer from "../../components/CoreContainer";
+import DashboardGroupDeleteGroupModal from "../../components/Dashboard/Group/DashboardGroupDeleteGroupModal";
 import DashboardGroupEditModal from "../../components/Dashboard/Group/DashboardGroupEditModal";
 import DashboardGroupInvitationModal from "../../components/Dashboard/Group/DashboardGroupInvitationModal";
+import DashboardGroupLeaveModal from "../../components/Dashboard/Group/DashboardGroupLeaveModal";
 import GroupMembersTable from "../../components/Dashboard/Group/DashboardGroupMembersTable";
 import DashboardGroupRemoveMemberModal from "../../components/Dashboard/Group/DashboardGroupRemoveMemberModal";
 import DashboardGroupSkeleton from "../../components/Dashboard/Group/DashboardGroupSkeleton";
@@ -40,14 +42,20 @@ export const BtnGroupRole = ({ role }: { role: GroupRole }) => {
 const DashboardGroup = () => {
 	const { user } = useAuth();
 	const { selectedGroupId } = useGroup();
-	const [openModalEditGroup, setOpenModalEditGroup] = useState(false);
+	const [openModalEditGroup, setOpenModalEditGroup] =
+		useState<boolean>(false);
 	const [openModalInvitationGroup, setOpenModalInvitationGroup] =
-		useState(false);
+		useState<boolean>(false);
+	const [openModalLeaveGroup, setOpenModalLeaveGroup] =
+		useState<boolean>(false);
 
 	const [selectedMember, setSelectedMember] =
 		useState<GroupMembershipExtraInfo | null>(null);
 	const [openModalRemoveMemberGroup, setOpenModalRemoveMemberGroup] =
-		useState(false);
+		useState<boolean>(false);
+
+	const [openModalDeleteGroup, setOpenModalDeleteGroup] =
+		useState<boolean>(false);
 
 	const {
 		data: groupData,
@@ -57,8 +65,8 @@ const DashboardGroup = () => {
 	} = useQuery({
 		queryKey: ["group", user?.id, selectedGroupId],
 		queryFn: () => getGroup(user?.id ?? "", selectedGroupId ?? ""),
+		enabled: !!user && !!selectedGroupId,
 	});
-	console.log("groupData", groupData);
 
 	const isOwner = groupData?.group?.createdById === user?.id;
 	const isAdmin = groupData?.group?.members.some(
@@ -136,19 +144,48 @@ const DashboardGroup = () => {
 									({groupData?.group?.members?.length})
 								</p>
 							</div>
-							{(isOwner || isAdmin) && (
-								<div
-									className="flex gap-2 items-center p-1 s-sm:p-2 cursor-pointer border rounded-md hover:text-accent-light-3 transition-all"
-									onClick={() =>
-										setOpenModalInvitationGroup(true)
-									}
-								>
-									<CirclePlus className="w-6 h-6" />
-									<p className="text-sm s-sm:text-base">
-										Invite Members
-									</p>
-								</div>
-							)}
+
+							<div className="flex gap-2">
+								{isOwner && (
+									<div
+										className="flex gap-2 items-center p-1 s-sm:p-2 cursor-pointer border rounded-md text-danger-dark-2 hover:text-text hover:bg-danger-dark-2 transition-all"
+										onClick={() =>
+											setOpenModalDeleteGroup(true)
+										}
+									>
+										<Trash className="w-6 h-6" />
+										<p className="text-sm s-sm:text-base">
+											Delete Group
+										</p>
+									</div>
+								)}
+								{(isOwner || isAdmin) && (
+									<div
+										className="flex gap-2 items-center p-1 s-sm:p-2 cursor-pointer border rounded-md hover:text-accent-light-3 transition-all"
+										onClick={() =>
+											setOpenModalInvitationGroup(true)
+										}
+									>
+										<CirclePlus className="w-6 h-6" />
+										<p className="text-sm s-sm:text-base">
+											Invite Members
+										</p>
+									</div>
+								)}
+								{!isOwner && (
+									<div
+										className="flex gap-2 items-center p-1 s-sm:p-2 cursor-pointer border rounded-md text-danger-dark-2 hover:text-text hover:bg-danger-dark-2 transition-all"
+										onClick={() =>
+											setOpenModalLeaveGroup(true)
+										}
+									>
+										<LogOut className="w-6 h-6" />
+										<p className="text-sm s-sm:text-base">
+											Leave Group
+										</p>
+									</div>
+								)}
+							</div>
 						</div>
 
 						<div
@@ -183,6 +220,13 @@ const DashboardGroup = () => {
 				/>
 			)}
 
+			{openModalLeaveGroup && (
+				<DashboardGroupLeaveModal
+					openModalLeaveGroup={openModalLeaveGroup}
+					setOpenModalLeaveGroup={setOpenModalLeaveGroup}
+				/>
+			)}
+
 			{openModalRemoveMemberGroup && (
 				<DashboardGroupRemoveMemberModal
 					openModalRemoveMemberGroup={openModalRemoveMemberGroup}
@@ -190,6 +234,13 @@ const DashboardGroup = () => {
 						setOpenModalRemoveMemberGroup
 					}
 					selectedMember={selectedMember}
+				/>
+			)}
+
+			{openModalDeleteGroup && (
+				<DashboardGroupDeleteGroupModal
+					openModalDeleteGroup={openModalDeleteGroup}
+					setOpenModalDeleteGroup={setOpenModalDeleteGroup}
 				/>
 			)}
 		</>
