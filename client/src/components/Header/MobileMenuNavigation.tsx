@@ -1,5 +1,5 @@
 import { Menu } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 
 const MobileMenuNavigation = () => {
