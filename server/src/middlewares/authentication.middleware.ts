@@ -57,8 +57,8 @@ export const authenticate = async (
 		if (isTokenExpired) {
 			res.clearCookie(TokenType.AccessToken, {
 				httpOnly: true,
-				sameSite: keys.nodeEnv === "production" ? "none" : "lax",
-				secure: keys.nodeEnv === "production",
+				sameSite: keys.target === "production" ? "none" : "lax",
+				secure: keys.target === "production",
 			});
 			res.status(401).json({ error: "Invalid or expired access token" });
 			return;
@@ -76,8 +76,8 @@ export const authenticate = async (
 		if (!user) {
 			res.clearCookie(TokenType.AccessToken, {
 				httpOnly: true,
-				sameSite: keys.nodeEnv === "production" ? "none" : "lax",
-				secure: keys.nodeEnv === "production",
+				sameSite: keys.target === "production" ? "none" : "lax",
+				secure: keys.target === "production",
 			});
 			res.status(401).json({ error: "User not found" });
 			return;
@@ -120,13 +120,13 @@ export const refreshAuthenticate = async (
 
 			res.clearCookie(TokenType.RefreshToken, {
 				httpOnly: true,
-				sameSite: keys.nodeEnv === "production" ? "none" : "lax",
-				secure: keys.nodeEnv === "production",
+				sameSite: keys.target === "production" ? "none" : "lax",
+				secure: keys.target === "production",
 			});
 			res.clearCookie(TokenType.AccessToken, {
 				httpOnly: true,
-				sameSite: keys.nodeEnv === "production" ? "none" : "lax",
-				secure: keys.nodeEnv === "production",
+				sameSite: keys.target === "production" ? "none" : "lax",
+				secure: keys.target === "production",
 			});
 			res.status(401).json({ error: "Invalid or expired refresh token" });
 			return;
@@ -136,8 +136,8 @@ export const refreshAuthenticate = async (
 		if (!user) {
 			res.clearCookie(TokenType.RefreshToken, {
 				httpOnly: true,
-				sameSite: keys.nodeEnv === "production" ? "none" : "lax",
-				secure: keys.nodeEnv === "production",
+				sameSite: keys.target === "production" ? "none" : "lax",
+				secure: keys.target === "production",
 			});
 			res.status(401).json({
 				error: "Refresh token not found or expired",

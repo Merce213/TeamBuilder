@@ -3,7 +3,7 @@ dotenv.config();
 const versionRiotApi = "15.2.1";
 
 const keys = {
-	nodeEnv: process.env.NODE_ENV || "development",
+	target: process.env.TARGET || "development",
 	accessTokenSecret: process.env.JWT_SECRET || "",
 	refreshTokenSecret: process.env.JWT_REFRESH_SECRET || "",
 	passwordResetTokenSecret: process.env.JWT_PASSWORD_RESET_SECRET || "",
