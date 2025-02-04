@@ -7,6 +7,7 @@ import {
 	verifyToken,
 } from "../utils/jwt";
 import { removeFromRedis } from "../utils/redis";
+import keys from "../utils/keys";
 
 export const checkNotAuthenticated = async (
 	req: Request,
@@ -56,6 +57,8 @@ export const authenticate = async (
 		if (isTokenExpired) {
 			res.clearCookie(TokenType.AccessToken, {
 				httpOnly: true,
+				sameSite: keys.nodeEnv === "production" ? "none" : "lax",
+				secure: keys.nodeEnv === "production",
 			});
 			res.status(401).json({ error: "Invalid or expired access token" });
 			return;
@@ -71,7 +74,11 @@ export const authenticate = async (
 			},
 		});
 		if (!user) {
-			res.clearCookie(TokenType.AccessToken, { httpOnly: true });
+			res.clearCookie(TokenType.AccessToken, {
+				httpOnly: true,
+				sameSite: keys.nodeEnv === "production" ? "none" : "lax",
+				secure: keys.nodeEnv === "production",
+			});
 			res.status(401).json({ error: "User not found" });
 			return;
 		}
@@ -113,9 +120,13 @@ export const refreshAuthenticate = async (
 
 			res.clearCookie(TokenType.RefreshToken, {
 				httpOnly: true,
+				sameSite: keys.nodeEnv === "production" ? "none" : "lax",
+				secure: keys.nodeEnv === "production",
 			});
 			res.clearCookie(TokenType.AccessToken, {
 				httpOnly: true,
+				sameSite: keys.nodeEnv === "production" ? "none" : "lax",
+				secure: keys.nodeEnv === "production",
 			});
 			res.status(401).json({ error: "Invalid or expired refresh token" });
 			return;
@@ -125,6 +136,8 @@ export const refreshAuthenticate = async (
 		if (!user) {
 			res.clearCookie(TokenType.RefreshToken, {
 				httpOnly: true,
+				sameSite: keys.nodeEnv === "production" ? "none" : "lax",
+				secure: keys.nodeEnv === "production",
 			});
 			res.status(401).json({
 				error: "Refresh token not found or expired",

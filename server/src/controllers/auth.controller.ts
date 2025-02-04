@@ -213,9 +213,13 @@ export const signOut = async (req: Request, res: Response) => {
 
 		res.clearCookie(TokenType.AccessToken, {
 			httpOnly: true,
+			sameSite: keys.nodeEnv === "production" ? "none" : "lax",
+			secure: keys.nodeEnv === "production",
 		});
 		res.clearCookie(TokenType.RefreshToken, {
 			httpOnly: true,
+			sameSite: keys.nodeEnv === "production" ? "none" : "lax",
+			secure: keys.nodeEnv === "production",
 		});
 		res.status(200).json({ message: "Successfully logged out" });
 		return;
