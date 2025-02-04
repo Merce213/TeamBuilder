@@ -1,19 +1,35 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { prisma } from "../client";
-import { Prisma } from "@prisma/client";
+import { GroupRole, Lane, UserRole } from "@prisma/client";
 
-export const createTeam = async (
-	req: Request,
-	res: Response,
-	next: NextFunction
-) => {
+export const createTeam = async (req: Request, res: Response) => {
 	try {
 		const { userId, groupId } = req.params;
 		const { name, description, members } = req.body;
+		const currentUserRole = req.user?.role;
+
+		const group = res.locals.group;
+
+		const isAdmin = currentUserRole === UserRole.ADMIN;
+		const isOwner = group.createdById === userId;
+		const isGroupAdmin = group.members.some(
+			(member: { userId: string; role: GroupRole }) =>
+				member.userId === userId && member.role === GroupRole.ADMIN
+		);
+
+		if (!isAdmin && !isOwner && !isGroupAdmin) {
+			res.status(403).json({
+				error: "Forbidden: Insufficient permissions to create a team.",
+			});
+			return;
+		}
 
 		const existingTeam = await prisma.team.findFirst({
 			where: {
-				name,
+				name: {
+					equals: name,
+					mode: "insensitive",
+				},
 				groupId,
 			},
 		});
@@ -24,32 +40,30 @@ export const createTeam = async (
 			return;
 		}
 
-		const team = await prisma.team.create({
+		await prisma.team.create({
 			data: {
+				groupId,
 				name,
-				group: {
-					connect: { id: groupId },
-				},
-				createdBy: {
-					connect: { id: userId },
-				},
 				description: description ?? undefined,
+				createdById: userId,
 				members: {
-					create: members.map((memberId: string) => ({
-						user: {
-							connect: { id: memberId },
-						},
-					})),
+					create: members?.map(
+						(member: {
+							userId?: string;
+							championId: number;
+							lane: Lane;
+						}) => ({
+							userId: member.userId ?? undefined,
+							championId: member.championId,
+							lane: member.lane,
+						})
+					),
 				},
-			},
-			include: {
-				members: true,
 			},
 		});
 
 		res.status(201).json({
 			message: "Team created successfully",
-			team,
 		});
 	} catch (error) {
 		console.error("Error creating team:", error);

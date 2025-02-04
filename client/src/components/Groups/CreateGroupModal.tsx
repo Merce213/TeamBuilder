@@ -130,17 +130,17 @@ const CreateGroupModal = ({
 				<div className="flex justify-end items-center gap-4">
 					<button
 						type="button"
-						className="btn-secondary p-2"
+						className="btn-danger-outline p-2"
 						onClick={() => setOpenModalCreateGroup(false)}
 					>
 						Cancel
 					</button>
 					<button
 						type="button"
-						className="btn-primary p-2 text-background"
+						className="btn-primary p-2"
 						onClick={handleCreateGroupModal}
 					>
-						Create
+						Create Group
 					</button>
 				</div>
 			</div>

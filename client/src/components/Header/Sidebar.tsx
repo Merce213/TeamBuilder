@@ -6,6 +6,7 @@ import { useLayout } from "../../contexts/LayoutContext";
 import { Group } from "../../types/Group";
 import CreateGroupModal from "../Groups/CreateGroupModal";
 import Popover from "../Popover";
+import CreateTeamModal from "../Teams/CreateTeamModal";
 
 const Sidebar = () => {
 	const { isSidebarOpen, setSidebarOpen } = useLayout();
@@ -13,12 +14,22 @@ const Sidebar = () => {
 
 	const [isClickedPopover, setIsClickedPopover] = useState(false);
 	const [openModalCreateGroup, setOpenModalCreateGroup] = useState(false);
+	const [openModalCreateTeam, setOpenModalCreateTeam] = useState(false);
 
 	const handleOpenModalCreateGroup = () => {
 		setOpenModalCreateGroup(!openModalCreateGroup);
 	};
 
 	const handleClickPopover = () => {
+		setIsClickedPopover(!isClickedPopover);
+		setSidebarOpen(false);
+	};
+
+	const handleOpenModalCreateTeam = () => {
+		setOpenModalCreateTeam(!openModalCreateTeam);
+	};
+
+	const handleClickPopoverTeam = () => {
 		setIsClickedPopover(!isClickedPopover);
 		setSidebarOpen(false);
 	};
@@ -31,6 +42,8 @@ const Sidebar = () => {
 		selectedGroupId,
 		handleSelectGroup,
 	} = useGroup();
+
+	const otherGroups = groups?.filter((group) => group.id !== selectedGroupId);
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -85,8 +98,14 @@ const Sidebar = () => {
 										Team 5
 									</p>
 								</div>
-								<div className="border-t border-gray-light-3 text-primary">
-									<div className="py-2 ps-2 hover:bg-gray-light-1 flex items-center w-full cursor-pointer">
+								<div
+									className="border-t border-gray-light-3 text-primary"
+									onClick={handleOpenModalCreateTeam}
+								>
+									<div
+										className="py-2 ps-2 hover:bg-gray-light-1 flex items-center w-full cursor-pointer"
+										onClick={handleClickPopoverTeam}
+									>
 										<SquarePlus />
 										<p className="ps-2">Create Team</p>
 									</div>
@@ -100,7 +119,10 @@ const Sidebar = () => {
 						</div>
 					</Popover>
 
-					<div className="flex flex-col justify-center p-3 gap-2">
+					<div
+						id="sidebar-navlinks"
+						className="flex flex-col justify-center p-3 gap-2"
+					>
 						<div className="flex flex-col">
 							<NavLink
 								to="/champions"
@@ -189,36 +211,24 @@ const Sidebar = () => {
 									<p className="text-danger">
 										Error loading groups
 									</p>
+								) : otherGroups?.length === 0 ? (
+									<p className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer">
+										No other groups
+									</p>
 								) : (
 									<div className="overflow-y-auto max-h-40">
-										{groups
-											?.filter(
-												(group) =>
-													group.id !== selectedGroupId
-											)
-											.map((group: Group) => (
-												<p
-													key={group.id}
-													className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer"
-													onClick={() => {
-														handleSelectGroup(
-															group
-														);
-														handleClickPopover();
-													}}
-												>
-													{group.name}
-												</p>
-											))}
-										<p className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer">
-											Group X
-										</p>
-										<p className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer">
-											Group Y
-										</p>
-										<p className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer">
-											Group Z
-										</p>
+										{otherGroups?.map((group: Group) => (
+											<p
+												key={group.id}
+												className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer"
+												onClick={() => {
+													handleSelectGroup(group);
+													handleClickPopover();
+												}}
+											>
+												{group.name}
+											</p>
+										))}
 									</div>
 								)}
 								<div
@@ -250,6 +260,13 @@ const Sidebar = () => {
 				<CreateGroupModal
 					openModalCreateGroup={openModalCreateGroup}
 					setOpenModalCreateGroup={setOpenModalCreateGroup}
+				/>
+			)}
+
+			{openModalCreateTeam && (
+				<CreateTeamModal
+					openModalCreateTeam={openModalCreateTeam}
+					setOpenModalCreateTeam={setOpenModalCreateTeam}
 				/>
 			)}
 		</>

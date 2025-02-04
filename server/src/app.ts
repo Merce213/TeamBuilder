@@ -7,6 +7,7 @@ import userRoutes from "./routes/user.route";
 import groupRoutes from "./routes/group.route";
 import summonerRoutes from "./routes/summoner.route";
 import invitationRoutes from "./routes/invitation.route";
+import teamRoutes from "./routes/team.route";
 import keys from "./utils/keys";
 
 const app: Application = express();
@@ -26,7 +27,7 @@ app.use(cookieParser());
 // Définir les routes
 app.use("/api/auth", authRoutes);
 app.use("/api/champions", championRoutes);
-app.use("/api/users", userRoutes, groupRoutes);
+app.use("/api/users", userRoutes, groupRoutes, teamRoutes);
 app.use("/api/summoners", summonerRoutes);
 app.use("/api/invitations", invitationRoutes);
 
