@@ -93,14 +93,16 @@ export const signUp = async (req: Request, res: Response) => {
 			expires: new Date(
 				Date.now() + TokenExpirationsInMs[TokenType.AccessToken]
 			),
-			sameSite: "none",
+			sameSite: keys.nodeEnv === "production" ? "none" : "lax",
+			secure: keys.nodeEnv === "production",
 		});
 		res.cookie(TokenType.RefreshToken, refreshToken, {
 			httpOnly: true,
 			expires: new Date(
 				Date.now() + TokenExpirationsInMs[TokenType.RefreshToken]
 			),
-			sameSite: "none",
+			sameSite: keys.nodeEnv === "production" ? "none" : "lax",
+			secure: keys.nodeEnv === "production",
 		});
 
 		const { username, ...userDetails } = user;
@@ -165,14 +167,16 @@ export const signIn = async (req: Request, res: Response) => {
 			expires: new Date(
 				Date.now() + TokenExpirationsInMs[TokenType.AccessToken]
 			),
-			sameSite: "none",
+			sameSite: keys.nodeEnv === "production" ? "none" : "lax",
+			secure: keys.nodeEnv === "production",
 		});
 		res.cookie(TokenType.RefreshToken, refreshToken, {
 			httpOnly: true,
 			expires: new Date(
 				Date.now() + TokenExpirationsInMs[TokenType.RefreshToken]
 			),
-			sameSite: "none",
+			sameSite: keys.nodeEnv === "production" ? "none" : "lax",
+			secure: keys.nodeEnv === "production",
 		});
 
 		const { username, ...userDetails } = user;
@@ -370,14 +374,16 @@ export const refreshToken = async (req: Request, res: Response) => {
 			expires: new Date(
 				Date.now() + TokenExpirationsInMs[TokenType.AccessToken]
 			),
-			sameSite: "none",
+			sameSite: keys.nodeEnv === "production" ? "none" : "lax",
+			secure: keys.nodeEnv === "production",
 		});
 		res.cookie(TokenType.RefreshToken, newRefreshToken, {
 			httpOnly: true,
 			expires: new Date(
 				Date.now() + TokenExpirationsInMs[TokenType.RefreshToken]
 			),
-			sameSite: "none",
+			sameSite: keys.nodeEnv === "production" ? "none" : "lax",
+			secure: keys.nodeEnv === "production",
 		});
 
 		res.status(200).json({ message: "Tokens regenerated successfully" });
