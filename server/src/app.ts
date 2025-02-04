@@ -7,13 +7,14 @@ import userRoutes from "./routes/user.route";
 import groupRoutes from "./routes/group.route";
 import summonerRoutes from "./routes/summoner.route";
 import invitationRoutes from "./routes/invitation.route";
+import keys from "./utils/keys";
 
 const app: Application = express();
 
 // Middleware
 app.use(
 	cors({
-		origin: "http://localhost:5173",
+		origin: ["http://localhost:5173", `${keys.frontendUrl}`],
 		credentials: true,
 	})
 );
