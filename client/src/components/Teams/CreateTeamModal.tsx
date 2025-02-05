@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import { getChampions } from "../../api/champions";
@@ -17,12 +17,14 @@ interface CreateTeamModalProps {
 	setOpenModalCreateTeam: ReactSetState<boolean>;
 }
 
-const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
+const CreateTeamModal = ({
 	openModalCreateTeam,
 	setOpenModalCreateTeam,
-}) => {
+}: CreateTeamModalProps) => {
 	const { user } = useAuth();
 	const { selectedGroupId } = useGroup();
+
+	const queryClient = useQueryClient();
 
 	const [teamData, setTeamData] = useState<TeamBody>({
 		name: "",
@@ -42,6 +44,7 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
 			createTeam(user?.id ?? "", selectedGroupId ?? "", teamData),
 		onSuccess: () => {
 			setOpenModalCreateTeam(false);
+			queryClient.invalidateQueries({ queryKey: ["teams"] });
 			toast.success("Team created successfully", {
 				style: {
 					padding: "16px",

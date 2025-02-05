@@ -3,7 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useGroup } from "../../contexts/GroupContext";
 import { useLayout } from "../../contexts/LayoutContext";
+import { useTeam } from "../../contexts/TeamContext";
 import { Group } from "../../types/Group";
+import { Team } from "../../types/Team";
 import CreateGroupModal from "../Groups/CreateGroupModal";
 import Popover from "../Popover";
 import CreateTeamModal from "../Teams/CreateTeamModal";
@@ -45,6 +47,17 @@ const Sidebar = () => {
 
 	const otherGroups = groups?.filter((group) => group.id !== selectedGroupId);
 
+	const {
+		teams,
+		isLoadingTeams,
+		teamsError,
+		teamData,
+		selectedTeamId,
+		handleSelectTeam,
+	} = useTeam();
+
+	const otherTeams = teams?.filter((team) => team.id !== selectedTeamId);
+
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			if (
@@ -81,23 +94,32 @@ const Sidebar = () => {
 						position="bottom"
 						content={
 							<div className="flex flex-col p-2">
-								<div className="overflow-y-auto max-h-40">
-									<p className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer">
-										Team 1
+								{isLoadingTeams ? (
+									<p>Loading teams...</p>
+								) : teamsError ? (
+									<p className="text-danger">
+										Error loading teams
 									</p>
+								) : otherTeams?.length === 0 ? (
 									<p className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer">
-										Team 2
+										No other teams
 									</p>
-									<p className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer">
-										Team 3
-									</p>
-									<p className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer">
-										Team 4
-									</p>
-									<p className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer">
-										Team 5
-									</p>
-								</div>
+								) : (
+									<div className="overflow-y-auto max-h-40">
+										{otherTeams?.map((team: Team) => (
+											<p
+												key={team.id}
+												className="py-2 ps-2 hover:bg-gray-light-1 cursor-pointer"
+												onClick={() => {
+													handleSelectTeam(team);
+													handleClickPopover();
+												}}
+											>
+												{team.name}
+											</p>
+										))}
+									</div>
+								)}
 								<div
 									className="border-t border-gray-light-3 text-primary"
 									onClick={handleOpenModalCreateTeam}
@@ -114,7 +136,9 @@ const Sidebar = () => {
 						}
 					>
 						<div className="flex items-center justify-between w-full text-primary">
-							<p className="font-sora">Select a Team</p>
+							<p className="font-sora">
+								{teamData?.name || "Select a Team"}
+							</p>
 							<SeparatorHorizontal />
 						</div>
 					</Popover>

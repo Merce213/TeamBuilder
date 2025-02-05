@@ -1,4 +1,4 @@
-import { Lane } from "./Champion";
+import { Champion, Lane } from "./Champion";
 
 export interface Team {
 	id: string;
@@ -16,6 +16,7 @@ export interface TeamMembership {
 	teamId: string;
 	userId?: string;
 	championId: number;
+	champion?: Champion;
 	lane: Lane;
 	joinedAt: Date;
 	updatedAt: Date;

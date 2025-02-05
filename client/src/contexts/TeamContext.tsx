@@ -6,9 +6,10 @@ import React, {
 	useMemo,
 	useState,
 } from "react";
-// import { getTeams } from "../api/teams";
-import { Team } from "../types/Team";
+
+import { getTeamsByGroupId } from "../api/team";
 import { ReactSetState } from "../types/ReactTypes";
+import { Team } from "../types/Team";
 import { useAuth } from "./AuthContext";
 import { useGroup } from "./GroupContext";
 
@@ -37,7 +38,7 @@ export const TeamProvider = ({ children }: { children: React.ReactNode }) => {
 		error: teamsError,
 	} = useQuery({
 		queryKey: ["teams", user?.id, selectedGroupId],
-		queryFn: () => getTeams(user?.id ?? "", selectedGroupId),
+		queryFn: () => getTeamsByGroupId(user?.id ?? "", selectedGroupId ?? ""),
 		enabled: !!user && !!selectedGroupId,
 	});
 
@@ -53,9 +54,12 @@ export const TeamProvider = ({ children }: { children: React.ReactNode }) => {
 				localStorage.setItem("selectedTeam", selectedTeam.id);
 				setTeamData(selectedTeam);
 			} else {
-				setTeamData(null);
 				localStorage.removeItem("selectedTeam");
+				setTeamData(null);
 			}
+		} else if (!isLoadingTeams && user && teams.length === 0) {
+			localStorage.removeItem("selectedTeam");
+			setTeamData(null);
 		}
 	}, [isLoadingTeams, user, teams, selectedTeamId]);
 

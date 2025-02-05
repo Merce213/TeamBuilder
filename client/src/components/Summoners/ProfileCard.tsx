@@ -19,52 +19,23 @@ import { QueueType } from "../../types/Summoner";
 import keys from "../../utils/keys";
 import EditSummonerProfileModal from "../Settings/EditSummonerProfileModal";
 
-const convertToLaneIcons = (lane: Lane) => {
-	switch (lane) {
-		case Lane.TOP:
-			return (
-				<img
-					src={TopIcon}
-					alt="top icon"
-					className="w-8 h-8 s-sm:w-10 s-sm:h-10 object-cover"
-				/>
-			);
-		case Lane.JUNGLE:
-			return (
-				<img
-					src={JungleIcon}
-					alt="jungle icon"
-					className="w-8 h-8 s-sm:w-10 s-sm:h-10 object-cover"
-				/>
-			);
+export const convertToLaneIcons = (lane: Lane) => {
+	const icons = {
+		[Lane.TOP]: TopIcon,
+		[Lane.JUNGLE]: JungleIcon,
+		[Lane.MID]: MidIcon,
+		[Lane.ADC]: AdcIcon,
+		[Lane.SUPPORT]: SupportIcon,
+	};
 
-		case Lane.MID:
-			return (
-				<img
-					src={MidIcon}
-					alt="middle icon"
-					className="w-8 h-8 s-sm:w-10 s-sm:h-10 object-cover"
-				/>
-			);
-		case Lane.ADC:
-			return (
-				<img
-					src={AdcIcon}
-					alt="adc icon"
-					className="w-8 h-8 s-sm:w-10 s-sm:h-10 object-cover"
-				/>
-			);
-		case Lane.SUPPORT:
-			return (
-				<img
-					src={SupportIcon}
-					alt="support icon"
-					className="w-8 h-8 s-sm:w-10 s-sm:h-10 object-cover"
-				/>
-			);
-		default:
-			return "";
-	}
+	return (
+		<img
+			src={icons[lane]}
+			alt={lane.toLowerCase()}
+			className="w-8 h-8 s-sm:w-10 s-sm:h-10 object-cover"
+			title={lane.charAt(0).toUpperCase() + lane.slice(1)}
+		/>
+	);
 };
 
 const ProfileCard = ({ editBtn = false }: { editBtn?: boolean }) => {
