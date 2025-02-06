@@ -6,6 +6,7 @@ interface ModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	closeOnClickOutside: boolean;
+	sizeClassName?: string;
 }
 
 const Backdrop = ({ isOpen }: { isOpen: boolean; onClose: () => void }) => {
@@ -42,6 +43,7 @@ const Modal = ({
 	onClose,
 	children,
 	closeOnClickOutside,
+	sizeClassName = "max-w-md",
 }: ModalProps) => {
 	const modalRef = useRef<HTMLDivElement | null>(null);
 
@@ -70,7 +72,7 @@ const Modal = ({
 			<Backdrop isOpen={isOpen} onClose={closeModal} />
 			<Overlay isOpen={isOpen}>
 				<div
-					className="bg-gray-light-1 rounded-lg p-4 w-full max-w-md mx-2 relative"
+					className={`bg-gray-light-1 rounded-lg p-4 w-full ${sizeClassName} mx-2 relative`}
 					ref={modalRef}
 				>
 					<button

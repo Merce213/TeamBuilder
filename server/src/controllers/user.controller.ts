@@ -61,6 +61,17 @@ export const updateUser = async (req: Request, res: Response) => {
 		const updateData: Partial<User> = {};
 
 		if (username && username !== user.username) {
+			const existingUsername = await prisma.user.findUnique({
+				where: { username },
+				select: { id: true },
+			});
+			if (existingUsername) {
+				res.status(409).json({
+					error: "Username already exists",
+					field: "username",
+				});
+				return;
+			}
 			updateData.username = username;
 		}
 

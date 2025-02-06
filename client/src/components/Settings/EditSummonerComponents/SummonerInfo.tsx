@@ -5,10 +5,13 @@ import {
 	unlinkSummonerFromUser,
 } from "../../../api/summoner";
 import { useAuth } from "../../../contexts/AuthContext";
+import { toast } from "sonner";
 
 const SummonerInfo = ({ summonerName }: { summonerName?: string }) => {
 	const { user } = useAuth();
 	const [summonerInput, setSummonerInput] = useState(summonerName ?? "");
+	const [errors, setErrors] = useState<Record<string, string>>({});
+
 	const queryClient = useQueryClient();
 
 	const handleChangeSummonerName = (
@@ -16,6 +19,10 @@ const SummonerInfo = ({ summonerName }: { summonerName?: string }) => {
 	) => {
 		if (!summonerName) {
 			setSummonerInput(e.target.value);
+			if (errors.summonerName) {
+				delete errors.summonerName;
+				setErrors(errors);
+			}
 		} else {
 			setSummonerInput(summonerName);
 		}
@@ -26,9 +33,25 @@ const SummonerInfo = ({ summonerName }: { summonerName?: string }) => {
 			linkSummonerToUser(user?.id ?? "", summonerInput),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["summoner", user?.id] });
+			toast.success("Summoner linked successfully", {
+				style: {
+					padding: "16px",
+				},
+			});
+			setErrors({});
 		},
 		onError: (error) => {
-			console.log(error);
+			if (error instanceof Error) {
+				toast.error(`Failed to link summoner: ${error.message}`, {
+					style: {
+						padding: "16px",
+					},
+				});
+				setSummonerInput("");
+				return;
+			}
+			setErrors(error);
+			return;
 		},
 	});
 
@@ -80,6 +103,11 @@ const SummonerInfo = ({ summonerName }: { summonerName?: string }) => {
 					</button>
 				)}
 			</div>
+			{errors.summonerName && (
+				<p className="text-danger-light-4 text-sm">
+					{errors.summonerName}
+				</p>
+			)}
 		</div>
 	);
 };
