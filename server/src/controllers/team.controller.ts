@@ -49,11 +49,11 @@ export const createTeam = async (req: Request, res: Response) => {
 				members: {
 					create: members?.map(
 						(member: {
-							userId?: string;
+							userId?: string | null;
 							championId: number;
 							lane: Lane;
 						}) => ({
-							userId: member.userId ?? undefined,
+							userId: member.userId ?? null,
 							championId: member.championId,
 							lane: member.lane,
 						})
