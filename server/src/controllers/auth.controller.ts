@@ -277,7 +277,10 @@ export const resetPasswordLink = async (req: Request, res: Response) => {
 			},
 		});
 
-		const resetLink = `${keys.frontendUrl}/change-password?token=${token}`;
+		const resetLink =
+			keys.target === "development"
+				? `http://localhost:5173/change-forgot-password?token=${token}`
+				: `${keys.frontendUrl}/change-forgot-password?token=${token}`;
 		await sendPasswordResetEmail(user.email, resetLink);
 
 		res.status(200).json({
@@ -303,37 +306,41 @@ export const changeResetPassword = async (req: Request, res: Response) => {
 			return;
 		}
 
-		const storedToken = await prisma.token.findFirst({
-			where: { token, type: "PASSWORD_RESET", userId: decodedToken.id },
-		});
+		const [storedToken, user] = await Promise.all([
+			prisma.token.findFirst({
+				where: {
+					token,
+					type: "PASSWORD_RESET",
+					userId: decodedToken.id,
+				},
+			}),
+			prisma.user.findUnique({
+				where: { id: decodedToken.id },
+			}),
+		]);
+
 		if (!storedToken || new Date() > storedToken.expiresAt) {
 			res.status(401).json({ error: "Invalid or expired token" });
 			return;
 		}
 
-		const user = await prisma.user.findUnique({
-			where: { id: decodedToken.id },
-		});
 		if (!user) {
 			res.status(404).json({ error: "User not found" });
 			return;
 		}
 
 		const hashedPassword = await bcrypt.hash(newPassword, 10);
-		await prisma.user.update({
-			where: { id: decodedToken.id },
-			data: { password: hashedPassword },
-		});
 
-		await prisma.token.deleteMany({
-			where: { userId: decodedToken.id, type: "PASSWORD_RESET" },
-		});
-
-		await sendPasswordChangedEmail(user.email);
-
-		await prisma.token.deleteMany({
-			where: { userId: decodedToken.id, type: "PASSWORD_RESET" },
-		});
+		await Promise.all([
+			prisma.user.update({
+				where: { id: decodedToken.id },
+				data: { password: hashedPassword },
+			}),
+			prisma.token.deleteMany({
+				where: { userId: decodedToken.id, type: "PASSWORD_RESET" },
+			}),
+			sendPasswordChangedEmail(user.email),
+		]);
 
 		res.status(200).json({ message: "Password changed successfully" });
 	} catch (error) {

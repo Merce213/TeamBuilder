@@ -3,6 +3,8 @@ import Layout from "./components/Layouts/Layout";
 import LayoutUser from "./components/Layouts/LayoutUser";
 import { ProtectedRoute } from "./components/ProtectedRoutes/ProtectedRoute";
 import { useAuth } from "./contexts/AuthContext";
+import ChangeForgotPassword from "./pages/auth/ChangeForgotPassword";
+import ForgotPassword from "./pages/auth/ForgotPassword";
 import SignIn from "./pages/auth/SignIn";
 import SignUp from "./pages/auth/SignUp";
 import Champion from "./pages/Champion";
@@ -31,6 +33,7 @@ const App = () => {
 					<Route path="/champions" element={<Champions />} />
 					<Route path="/champions/:nameId" element={<Champion />} />
 
+					{/* Auth */}
 					<Route
 						path="/signin"
 						element={
@@ -53,6 +56,29 @@ const App = () => {
 							</ProtectedRoute>
 						}
 					/>
+					<Route
+						path="/forgot-password"
+						element={
+							<ProtectedRoute
+								isAllowed={!user}
+								redirectPath="/dashboard"
+							>
+								<ForgotPassword />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/change-forgot-password"
+						element={
+							<ProtectedRoute
+								isAllowed={!user}
+								redirectPath="/dashboard"
+							>
+								<ChangeForgotPassword />
+							</ProtectedRoute>
+						}
+					/>
+
 					<Route path="/users/:userId" element={<User />} />
 
 					{/* LEGAL */}

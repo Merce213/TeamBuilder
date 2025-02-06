@@ -37,12 +37,12 @@ router.post(
 router.post("/signout", authenticate, signOut);
 router.post(
 	"/reset-password-link",
-	[validateData(ResetPasswordRequestSchema)],
+	[checkNotAuthenticated, validateData(ResetPasswordRequestSchema)],
 	resetPasswordLink
 );
 router.post(
 	"/change-forgotten-password",
-	[validateData(ChangeForgottenPasswordSchema)],
+	[checkNotAuthenticated, validateData(ChangeForgottenPasswordSchema)],
 	changeResetPassword
 );
 router.get("/me", authenticate, me);
