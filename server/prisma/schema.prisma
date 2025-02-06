@@ -1,0 +1,303 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
+}
+
+// ------------- CHAMPIONS AND RELATED ENTITIES --------------
+model Champion {
+    id             Int                    @id @default(autoincrement())
+    nameId         String                 @unique @db.VarChar(30)
+    name           String                 @unique @db.VarChar(30)
+    title          String                 @db.VarChar(50)
+    blurb          String                 @db.Text
+    lore           String                 @db.Text
+    info           Info? // Relation 1-1 avec Info
+    image          Image? // Relation 1-1 avec Image
+    stats          Stats? // Relation 1-1 avec Stats
+    skins          Skin[] // Skins associés au champion (1-N)
+    tags           ChampionTag[] // Jointure N-N avec Tag
+    lanes          ChampionLane[] // Jointure N-N avec Lane
+    teamMembership TeamMembership[] // Jointure N-N avec Team
+    favoriteBy     UserFavoriteChampion[]
+
+    @@index([name])
+}
+
+model Info {
+    id         Int @id @default(autoincrement())
+    championId Int @unique
+    attack     Int
+    defense    Int
+    magic      Int
+    difficulty Int
+
+    champion Champion @relation(fields: [championId], references: [id])
+}
+
+model Image {
+    id         Int    @id @default(autoincrement())
+    championId Int    @unique
+    full       String
+    sprite     String
+
+    champion Champion @relation(fields: [championId], references: [id])
+}
+
+model Tag {
+    id          Int           @id @default(autoincrement())
+    name        String        @unique @db.VarChar(15) // Exemple: Fighter, Mage, Tank, etc.
+    championTag ChampionTag[] // Jointure N-N avec Champion
+
+    @@index([name])
+}
+
+model Stats {
+    id                   Int   @id @default(autoincrement())
+    championId           Int   @unique
+    hp                   Float
+    hpPerLevel           Float
+    mp                   Float
+    mpPerLevel           Float
+    moveSpeed            Int
+    armor                Float
+    armorPerLevel        Float
+    spellBlock           Float
+    spellBlockPerLevel   Float
+    attackRange          Int
+    hpRegen              Float
+    hpRegenPerLevel      Float
+    mpRegen              Float
+    mpRegenPerLevel      Float
+    crit                 Float
+    critPerLevel         Float
+    attackDamage         Float
+    attackDamagePerLevel Float
+    attackSpeedPerLevel  Float
+    attackSpeed          Float
+
+    champion Champion @relation(fields: [championId], references: [id])
+}
+
+model Skin {
+    id         Int    @id @default(autoincrement())
+    championId Int
+    skinId     String @unique
+    num        Int
+    name       String
+
+    champion Champion @relation(fields: [championId], references: [id])
+
+    @@unique([championId, skinId]) // Un skin doit être unique pour chaque champion
+}
+
+model ChampionTag {
+    id         Int @id @default(autoincrement())
+    championId Int
+    tagId      Int
+
+    champion Champion @relation(fields: [championId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    tag      Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@unique([championId, tagId])
+    @@index([championId, tagId])
+}
+
+model ChampionLane {
+    id         Int  @id @default(autoincrement())
+    championId Int
+    lane       Lane
+
+    champion Champion @relation(fields: [championId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@unique([championId, lane]) // Un champion ne peut être dans une même lane qu'une seule fois
+    @@index([championId, lane])
+}
+
+// ------------- USER AND RELATED ENTITIES --------------
+model User {
+    id                String                 @id @default(uuid())
+    username          String                 @unique @db.VarChar(20)
+    email             String                 @unique @db.VarChar(50)
+    password          String
+    role              UserRole               @default(USER) // Rôle de l'utilisateur (par défaut : USER)
+    summoner          SummonerInfo? // Relation 1-1 avec summoner 
+    groups            GroupMembership[] // Relation avec les groupes via GroupMembership
+    teams             TeamMembership[] // Relation avec les équipes via TeamMembership
+    createdGroups     Group[]                @relation("UserGroups") // Groupes créés par cet utilisateur
+    createdTeams      Team[]                 @relation("UserTeams") // Teams créées par cet utilisateur
+    tokens            Token[] // Relation avec les tokens
+    session           Session[] // Relation avec les sessions
+    favoriteChampions UserFavoriteChampion[]
+    favoriteLanes     UserFavoriteLane[]
+    createdAt         DateTime               @default(now())
+    updatedAt         DateTime               @updatedAt
+
+    @@unique([username, email]) // Un nom d'utilisateur et un email doivent être uniques
+    @@index([id, username, email, createdAt])
+}
+
+model SummonerInfo {
+    id       String @id @default(uuid())
+    userId   String @unique
+    puuid    String @unique
+    gameName String @db.VarChar(18)
+    tagLine  String @db.VarChar(6)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@index([gameName, tagLine])
+}
+
+model Token {
+    id        String    @id @default(uuid())
+    userId    String
+    type      TokenType // Type du token (Email Verification, Password Reset etc.)
+    token     String
+    expiresAt DateTime
+    createdAt DateTime  @default(now())
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@index([userId, type, token])
+}
+
+model Session {
+    id           String   @id @default(uuid())
+    userId       String
+    refreshToken String   @unique
+    expiresAt    DateTime
+    createdAt    DateTime @default(now())
+    device       String
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@index([userId, refreshToken, device])
+}
+
+model UserFavoriteChampion {
+    id         String   @id @default(uuid())
+    userId     String
+    championId Int
+    addedAt    DateTime @default(now())
+
+    user     User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    champion Champion @relation(fields: [championId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@unique([userId, championId]) // Un utilisateur ne peut avoir un champion favori qu'une seule fois
+    @@index([userId, championId])
+}
+
+model UserFavoriteLane {
+    id      String   @id @default(uuid())
+    userId  String
+    lane    Lane
+    addedAt DateTime @default(now())
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade) // Relation vers User
+
+    @@unique([userId, lane]) // Un utilisateur ne peut avoir une lane favori qu'une seule fois
+    @@index([userId, lane])
+}
+
+model Group {
+    id          String            @id @default(uuid())
+    createdById String
+    name        String
+    description String?
+    members     GroupMembership[] // Relation avec les membres via GroupMembership
+    teams       Team[] // Relation avec les équipes de ce groupe
+    createdAt   DateTime          @default(now())
+    updatedAt   DateTime          @updatedAt
+
+    createdBy User @relation("UserGroups", fields: [createdById], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@unique([name, createdById]) // Un nom de groupe doit être unique par utilisateur
+    @@index([name])
+}
+
+model GroupMembership {
+    id        String    @id @default(uuid()) // Identifiant unique pour chaque relation
+    groupId   String
+    userId    String
+    role      GroupRole @default(MEMBER) // Rôle de l'utilisateur dans ce groupe (OWNER, ADMIN, MEMBER)
+    joinedAt  DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+
+    group Group @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@unique([groupId, userId]) // Un utilisateur ne peut être membre d'un groupe qu'une seule fois
+    @@index([groupId, userId, role])
+}
+
+model Team {
+    id          String           @id @default(uuid())
+    groupId     String
+    createdById String
+    name        String
+    description String?
+    members     TeamMembership[] // Membres de l'équipe via TeamMembership
+    createdAt   DateTime         @default(now())
+    updatedAt   DateTime         @updatedAt
+
+    group     Group @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    createdBy User  @relation("UserTeams", fields: [createdById], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@unique([groupId, name]) // Un nom d'équipe doit être unique pour chaque groupe
+    @@index([name, createdById])
+}
+
+model TeamMembership {
+    id         String   @id @default(uuid())
+    teamId     String
+    userId     String
+    championId Int
+    lane       Lane
+    joinedAt   DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    team     Team     @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    user     User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    champion Champion @relation(fields: [championId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@unique([teamId, userId]) // Un utilisateur ne peut être membre d'une équipe qu'une seule fois
+    @@unique([teamId, championId, lane]) // Un champion ne peut être dans une même équipe et lane qu'une seule fois
+    @@index([teamId, userId, championId])
+}
+
+// enum
+enum UserRole {
+    USER
+    ADMIN
+}
+
+enum GroupRole {
+    OWNER
+    ADMIN
+    MEMBER
+}
+
+enum Lane {
+    TOP
+    JUNGLE
+    MID
+    ADC
+    SUPPORT
+}
+
+enum TokenType {
+    EMAIL_VERIFY
+    PASSWORD_RESET
+    INVITATION
+}
