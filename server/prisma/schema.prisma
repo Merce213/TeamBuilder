@@ -271,8 +271,7 @@ model TeamMembership {
     user     User?    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     champion Champion @relation(fields: [championId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-    @@unique([teamId, userId]) // Un utilisateur ne peut être membre d'une équipe qu'une seule fois
-    @@unique([teamId, championId, lane]) // Un champion ne peut être dans une même équipe et lane qu'une seule fois
+    @@unique([teamId, userId, championId, lane]) // Un utilisateur ne peut pas avoir le même champion dans la même lane plus d'une fois dans une équipe.
     @@index([teamId, userId, championId])
 }
 
