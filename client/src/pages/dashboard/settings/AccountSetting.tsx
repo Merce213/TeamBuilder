@@ -28,7 +28,7 @@ const AccountSetting = () => {
 	const updateUserMutation = useMutation({
 		mutationFn: (updatedUserData: Partial<typeof userData>) =>
 			updateUser(user?.id ?? "", updatedUserData),
-		onSuccess: async (data, variables) => {
+		onSuccess: async (_, variables) => {
 			queryClient.invalidateQueries({ queryKey: ["user", user?.id] });
 			toast.success("User information updated successfully", {
 				style: {
