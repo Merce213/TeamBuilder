@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { getChampions } from "../../api/champions";
 import { createTeam } from "../../api/team";
