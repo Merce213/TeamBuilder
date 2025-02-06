@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { AuthProvider } from "./AuthContext";
 import { GroupProvider } from "./GroupContext";
 import { LayoutProvider } from "./LayoutContext";
+import { TeamProvider } from "./TeamContext";
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
 	const queryClient = new QueryClient();
@@ -12,10 +13,12 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 		<QueryClientProvider client={queryClient}>
 			<AuthProvider>
 				<GroupProvider>
-					<LayoutProvider>
-						<Toaster richColors closeButton />
-						{children}
-					</LayoutProvider>
+					<TeamProvider>
+						<LayoutProvider>
+							<Toaster richColors closeButton />
+							{children}
+						</LayoutProvider>
+					</TeamProvider>
 				</GroupProvider>
 			</AuthProvider>
 		</QueryClientProvider>

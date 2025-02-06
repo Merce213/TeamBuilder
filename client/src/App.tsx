@@ -3,21 +3,24 @@ import Layout from "./components/Layouts/Layout";
 import LayoutUser from "./components/Layouts/LayoutUser";
 import { ProtectedRoute } from "./components/ProtectedRoutes/ProtectedRoute";
 import { useAuth } from "./contexts/AuthContext";
+import ChangeForgotPassword from "./pages/auth/ChangeForgotPassword";
+import ForgotPassword from "./pages/auth/ForgotPassword";
 import SignIn from "./pages/auth/SignIn";
 import SignUp from "./pages/auth/SignUp";
 import Champion from "./pages/Champion";
 import Champions from "./pages/Champions";
+import DashboardGroup from "./pages/dashboard/DashboardGroup";
 import DashboardHome from "./pages/dashboard/DashboardHome";
+import DashboardTeam from "./pages/dashboard/DashboardTeam";
+import AccountSetting from "./pages/dashboard/settings/AccountSetting";
 import ProfileSetting from "./pages/dashboard/settings/ProfileSetting";
 import Settings from "./pages/dashboard/settings/Settings";
 import Home from "./pages/Home";
+import JoinGroup from "./pages/JoinGroup";
 import About from "./pages/legal/About";
 import Privacy from "./pages/legal/Privacy";
 import Terms from "./pages/legal/Terms";
 import User from "./pages/users/User";
-import AccountSetting from "./pages/dashboard/settings/AccountSetting";
-import DashboardGroup from "./pages/dashboard/DashboardGroup";
-import JoinGroup from "./pages/JoinGroup";
 
 const App = () => {
 	const { user } = useAuth();
@@ -30,6 +33,7 @@ const App = () => {
 					<Route path="/champions" element={<Champions />} />
 					<Route path="/champions/:nameId" element={<Champion />} />
 
+					{/* Auth */}
 					<Route
 						path="/signin"
 						element={
@@ -52,6 +56,29 @@ const App = () => {
 							</ProtectedRoute>
 						}
 					/>
+					<Route
+						path="/forgot-password"
+						element={
+							<ProtectedRoute
+								isAllowed={!user}
+								redirectPath="/dashboard"
+							>
+								<ForgotPassword />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/change-forgot-password"
+						element={
+							<ProtectedRoute
+								isAllowed={!user}
+								redirectPath="/dashboard"
+							>
+								<ChangeForgotPassword />
+							</ProtectedRoute>
+						}
+					/>
+
 					<Route path="/users/:userId" element={<User />} />
 
 					{/* LEGAL */}
@@ -85,6 +112,14 @@ const App = () => {
 						element={
 							<ProtectedRoute isAllowed={!!user}>
 								<DashboardGroup />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/dashboard/team"
+						element={
+							<ProtectedRoute isAllowed={!!user}>
+								<DashboardTeam />
 							</ProtectedRoute>
 						}
 					/>

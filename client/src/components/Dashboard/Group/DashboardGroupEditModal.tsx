@@ -104,7 +104,7 @@ const DashboardGroupEditModal = ({
 			<div id="modal-content" className="flex flex-col gap-5">
 				<div className="flex flex-col gap-4">
 					<p className="text-base font-semibold font-sora s-sm:text-lg">
-						Edit group
+						Edit Group
 					</p>
 				</div>
 

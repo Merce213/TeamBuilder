@@ -66,6 +66,7 @@ const DashboardGroup = () => {
 		queryKey: ["group", user?.id, selectedGroupId],
 		queryFn: () => getGroup(user?.id ?? "", selectedGroupId ?? ""),
 		enabled: !!user && !!selectedGroupId,
+		staleTime: 1000 * 60 * 5,
 	});
 
 	const isOwner = groupData?.group?.createdById === user?.id;
@@ -110,7 +111,7 @@ const DashboardGroup = () => {
 						<h1 className="text-base s-md:text-2xl font-sora font-bold">
 							{groupData?.group?.name || "Group Name"}
 						</h1>
-						{isOwner && (
+						{(isOwner || isAdmin) && (
 							<div
 								className="flex gap-2 items-center p-1 s-sm:p-2 cursor-pointer border rounded-md hover:text-accent-light-3 transition-all"
 								onClick={() => setOpenModalEditGroup(true)}

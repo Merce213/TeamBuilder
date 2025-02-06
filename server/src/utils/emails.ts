@@ -9,7 +9,7 @@ export const sendEmail = async (
 	html: string
 ) => {
 	const finalTo =
-		process.env.NODE_ENV === "development" ? "delivered@resend.dev" : to;
+		process.env.TARGET === "development" ? "delivered@resend.dev" : to;
 
 	try {
 		await resend.emails.send({

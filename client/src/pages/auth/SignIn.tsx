@@ -64,6 +64,7 @@ const SignIn = () => {
 							value={credentials.username}
 							onChange={handleChange}
 							className="mt-1 block w-full px-3 py-2 border-2 rounded-md shadow-sm"
+							required
 						/>
 						{errors && (
 							<p className="text-danger-light-3 mt-1 text-sm">
@@ -81,6 +82,7 @@ const SignIn = () => {
 							value={credentials.password}
 							onChange={handleChange}
 							className="mt-1 block w-full px-3 py-2 border-2 rounded-md shadow-sm"
+							required
 						/>
 						{errors && (
 							<p className="text-danger-light-3 mt-1 text-sm">
@@ -102,6 +104,14 @@ const SignIn = () => {
 						</button>
 					</div>
 				</form>
+				<div className="mt-4 flex justify-center items-center">
+					<Link
+						to="/forgot-password"
+						className="text-gray-light-8 hover:underline"
+					>
+						Forgot password?
+					</Link>
+				</div>
 				<div className="mt-4 flex justify-center items-center">
 					<p className="text-gray-light-8">Don't have an account?</p>
 					<Link
