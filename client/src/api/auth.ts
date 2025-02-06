@@ -52,3 +52,55 @@ export const signOut = async () => {
 
 	return response;
 };
+
+export const sendPasswordResetLink = async (email: string) => {
+	const response = await fetch(`${keys.API_URL}/auth/reset-password-link`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ email }),
+	});
+
+	if (!response.ok) {
+		const errorData = await response.json();
+
+		if (errorData.errors) {
+			throw errorData.errors;
+		} else {
+			throw new Error(
+				errorData.error || "Failed to send password reset link"
+			);
+		}
+	}
+
+	return await response.json();
+};
+
+export const resetPassword = async (data: {
+	token: string;
+	newPassword: string;
+}) => {
+	const response = await fetch(
+		`${keys.API_URL}/auth/change-forgotten-password`,
+		{
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(data),
+		}
+	);
+
+	if (!response.ok) {
+		const errorData = await response.json();
+
+		if (errorData.errors) {
+			throw errorData.errors;
+		} else {
+			throw new Error("Failed to reset password");
+		}
+	}
+
+	return await response.json();
+};

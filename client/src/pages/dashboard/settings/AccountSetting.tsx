@@ -28,13 +28,21 @@ const AccountSetting = () => {
 	const updateUserMutation = useMutation({
 		mutationFn: (updatedUserData: Partial<typeof userData>) =>
 			updateUser(user?.id ?? "", updatedUserData),
-		onSuccess: async () => {
+		onSuccess: async (data, variables) => {
 			queryClient.invalidateQueries({ queryKey: ["user", user?.id] });
 			toast.success("User information updated successfully", {
 				style: {
 					padding: "16px",
 				},
 			});
+
+			if ("oldPassword" in variables || "newPassword" in variables) {
+				setUserData((prevState) => ({
+					...prevState,
+					oldPassword: "",
+					newPassword: "",
+				}));
+			}
 		},
 		onError: (error) => {
 			if (error instanceof Error) {

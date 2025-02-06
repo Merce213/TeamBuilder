@@ -23,7 +23,14 @@ export const linkSummonerToUser = async (
 
 	if (!response.ok) {
 		const errorData = await response.json();
-		throw new Error(errorData.error || "Failed to link summoner");
+		if (errorData.errors) {
+			throw errorData.errors;
+		} else {
+			throw new Error(
+				errorData.error ||
+					"Failed to link summoner profile to your account, please try again later."
+			);
+		}
 	}
 
 	return await response.json();
