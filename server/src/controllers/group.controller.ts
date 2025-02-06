@@ -222,12 +222,6 @@ export const updateGroup = async (req: Request, res: Response) => {
 				name: true,
 				description: true,
 				createdById: true,
-				members: {
-					select: {
-						userId: true,
-						role: true,
-					},
-				},
 			},
 		});
 
@@ -339,7 +333,7 @@ export const kickMemberFromGroup = async (req: Request, res: Response) => {
 		}
 		if (!isOwner && !isGroupAdmin && !isAdmin) {
 			res.status(403).json({
-				error: "Forbidden: Only the owner, group admins, or global admins can kick members.",
+				error: "Forbidden: Only the owner, group admins, or system admins can kick members.",
 			});
 			return;
 		}
