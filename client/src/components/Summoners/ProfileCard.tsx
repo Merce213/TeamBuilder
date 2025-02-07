@@ -48,6 +48,8 @@ const ProfileCard = ({ editBtn = false }: { editBtn?: boolean }) => {
 		queryFn: async () => getSummonerProfile(user?.id as string),
 		staleTime: 1000 * 60 * 5,
 		retry: false,
+		refetchOnWindowFocus: false,
+		refetchOnReconnect: false,
 	});
 
 	const { data: dataFavoriteLanes } = useQuery({
@@ -55,6 +57,8 @@ const ProfileCard = ({ editBtn = false }: { editBtn?: boolean }) => {
 		queryFn: async () => getFavoriteLanes(user?.id as string),
 		staleTime: 1000 * 60 * 5,
 		retry: false,
+		refetchOnWindowFocus: false,
+		refetchOnReconnect: false,
 	});
 
 	const { data: dataFavoriteChampions } = useQuery({
@@ -62,6 +66,8 @@ const ProfileCard = ({ editBtn = false }: { editBtn?: boolean }) => {
 		queryFn: async () => getFavoriteChampions(user?.id as string),
 		staleTime: 1000 * 60 * 5,
 		retry: false,
+		refetchOnWindowFocus: false,
+		refetchOnReconnect: false,
 	});
 
 	return (
