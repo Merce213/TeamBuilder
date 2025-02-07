@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { signOut } from "../../api/auth";
 import { useAuth } from "../../contexts/AuthContext";
+import { UserRole } from "../../types/User";
 
 const UserMenu = ({ className }: { className?: string }) => {
 	const { user, setUser } = useAuth();
@@ -97,6 +98,15 @@ const UserMenu = ({ className }: { className?: string }) => {
 						>
 							Settings
 						</NavLink>
+						{user.role === UserRole.ADMIN && (
+							<NavLink
+								to="/admin"
+								className="block ps-2 py-2 hover:bg-gray-light-1"
+								onClick={() => setIsOpen(false)}
+							>
+								Admin Panel
+							</NavLink>
+						)}
 						<span
 							className="block ps-2 py-2 text-danger hover:bg-danger-dark-8 cursor-pointer"
 							onClick={handleSignOut}
