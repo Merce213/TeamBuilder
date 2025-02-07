@@ -36,6 +36,9 @@ export const GroupProvider = ({ children }: { children: React.ReactNode }) => {
 		queryKey: ["groups", user?.id],
 		queryFn: () => getGroups(user?.id ?? ""),
 		enabled: !!user,
+		staleTime: 1000 * 60 * 5,
+		refetchOnWindowFocus: false,
+		refetchOnReconnect: false,
 	});
 
 	const groups = useMemo(() => data?.groups ?? [], [data]);

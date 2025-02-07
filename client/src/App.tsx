@@ -3,6 +3,10 @@ import Layout from "./components/Layouts/Layout";
 import LayoutUser from "./components/Layouts/LayoutUser";
 import { ProtectedRoute } from "./components/ProtectedRoutes/ProtectedRoute";
 import { useAuth } from "./contexts/AuthContext";
+import AdminGroups from "./pages/admin/AdminGroups";
+import AdminMain from "./pages/admin/AdminMain";
+import AdminTeams from "./pages/admin/AdminTeams";
+import AdminUsers from "./pages/admin/AdminUsers";
 import ChangeForgotPassword from "./pages/auth/ChangeForgotPassword";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import SignIn from "./pages/auth/SignIn";
@@ -21,6 +25,7 @@ import About from "./pages/legal/About";
 import Privacy from "./pages/legal/Privacy";
 import Terms from "./pages/legal/Terms";
 import User from "./pages/users/User";
+import { UserRole } from "./types/User";
 
 const App = () => {
 	const { user } = useAuth();
@@ -81,10 +86,81 @@ const App = () => {
 
 					<Route path="/users/:userId" element={<User />} />
 
+					{/* DASHBOARD ADMIN */}
+					<Route
+						path="/admin"
+						element={
+							<ProtectedRoute
+								isAllowed={
+									!!user && user.role === UserRole.ADMIN
+								}
+								redirectPath="/dashboard"
+							>
+								<AdminMain />
+							</ProtectedRoute>
+						}
+					>
+						<Route
+							index
+							element={
+								<ProtectedRoute
+									isAllowed={
+										!!user && user.role === UserRole.ADMIN
+									}
+									redirectPath="/dashboard"
+								>
+									<Navigate to="/admin/users" />
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path="users"
+							element={
+								<ProtectedRoute
+									isAllowed={
+										!!user && user.role === UserRole.ADMIN
+									}
+									redirectPath="/dashboard"
+								>
+									<AdminUsers />
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path="groups"
+							element={
+								<ProtectedRoute
+									isAllowed={
+										!!user && user.role === UserRole.ADMIN
+									}
+									redirectPath="/dashboard"
+								>
+									<AdminGroups />
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path="teams"
+							element={
+								<ProtectedRoute
+									isAllowed={
+										!!user && user.role === UserRole.ADMIN
+									}
+									redirectPath="/dashboard"
+								>
+									<AdminTeams />
+								</ProtectedRoute>
+							}
+						/>
+					</Route>
+
 					{/* LEGAL */}
 					<Route path="/about" element={<About />} />
 					<Route path="/terms-and-conditions" element={<Terms />} />
 					<Route path="/privacy-policy" element={<Privacy />} />
+
+					{/* REDIRECT */}
+					<Route path="*" element={<Navigate to="/" />} />
 				</Route>
 
 				<Route element={<LayoutUser />}>
