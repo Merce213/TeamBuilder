@@ -33,8 +33,20 @@ export const getUser = async (req: Request, res: Response) => {
 export const getAllUsers = async (req: Request, res: Response) => {
 	try {
 		const users = await prisma.user.findMany({
-			select: { id: true, username: true, email: true, role: true },
+			select: {
+				id: true,
+				username: true,
+				email: true,
+				role: true,
+				createdAt: true,
+			},
 		});
+
+		if (!users) {
+			res.status(404).json({ error: "No users found" });
+			return;
+		}
+
 		res.status(200).json(users);
 	} catch (error) {
 		console.error("Error in getAllUsers route:", error);

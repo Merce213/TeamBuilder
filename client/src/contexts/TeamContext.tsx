@@ -40,6 +40,9 @@ export const TeamProvider = ({ children }: { children: React.ReactNode }) => {
 		queryKey: ["teams", user?.id, selectedGroupId],
 		queryFn: () => getTeamsByGroupId(user?.id ?? "", selectedGroupId ?? ""),
 		enabled: !!user && !!selectedGroupId,
+		staleTime: 1000 * 60 * 5,
+		refetchOnWindowFocus: false,
+		refetchOnReconnect: false,
 	});
 
 	const teams = useMemo(() => data?.teams ?? [], [data]);

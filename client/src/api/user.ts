@@ -16,6 +16,19 @@ export const getUser = async (userId: string) => {
 	return await response.json();
 };
 
+export const getAllUsers = async () => {
+	const response = await fetchWithRefreshAndRetry(
+		`${keys.API_URL}/users/all`
+	);
+
+	if (!response.ok) {
+		const errorData = await response.json();
+		throw new Error(errorData.error || "Failed to fetch users");
+	}
+
+	return await response.json();
+};
+
 export const updateUser = async (userId: string, data: Partial<UserCreate>) => {
 	const response = await fetchWithRefreshAndRetry(
 		`${keys.API_URL}/users/${userId}`,
