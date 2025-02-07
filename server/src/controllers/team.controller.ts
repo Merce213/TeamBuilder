@@ -100,6 +100,25 @@ export const getAllTeamsByGroupId = async (req: Request, res: Response) => {
 			where: {
 				groupId,
 			},
+			include: {
+				members: {
+					select: {
+						userId: true,
+						championId: true,
+						lane: true,
+						champion: {
+							select: {
+								name: true,
+								image: {
+									select: {
+										full: true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
 		});
 
 		res.status(200).json({
